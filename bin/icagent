@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+#
+# A very simple agent for iclassify.
+#
+
+require 'rubygems'
+require File.dirname(__FILE__) + '/../lib/iclassify/agent'
+
+agent = IClassify::Agent.new(File.dirname(__FILE__) + '/../icagent.uuid')
+agent.load
+agent.merge_facter
+ARGV.each do |f|
+  if File.exists?(f)
+    agent.run_script(f)
+  end
+end
+agent.update

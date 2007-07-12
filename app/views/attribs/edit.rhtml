@@ -1,0 +1,14 @@
+<fieldset>
+  <legend>Edit an Attribute</legend>
+<%= error_messages_for :attrib %>
+<% @attrib.avalues.each do |avalue| %>
+
+<%= error_messages_for :avalue %>
+<% form_for :avalue, avalue, :url => avalue_url(:node_id => @node.id, :attrib_id => @attrib.id, :id => avalue.id), :html => { :method => 'put' } do |form| %>
+<%= render :partial => 'avalues/form', :locals => { :attrib => @attrib, :node => @node, :form => form }  %>
+<%= submit_tag "Update" %>
+<%= link_to 'Remove', avalue_url(:node_id => @node.id, :attrib_id => @attrib.id, :id => avalue.id), :confirm => 'Are you sure?', :method => :delete %>
+<% end %>
+
+<% end %>
+</fieldset>

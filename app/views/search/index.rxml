@@ -1,0 +1,8 @@
+xml.search do
+  xml.nodes do
+    @nodes.collect { |n| n.rest_serialize }.each do |node|
+      render :partial => "nodes/node", 
+             :locals => { :xml_instance => xml, :node => node }
+    end
+  end
+end

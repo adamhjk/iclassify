@@ -1,0 +1,14 @@
+<% form_tag url_for(:controller => "search"), :method => 'get' do -%>
+    Query: <%= text_field_tag :q, params[:q] %> <%= submit_tag "Search" %>
+<% end -%>
+
+<% if @nodes -%>
+<h1>Search Results</h1>
+<table>
+  <tr>
+    <th>UUID</th><th>Description</th><th>Notes</th><th>Tags</th>
+  </tr>
+<%= render(:partial => "nodes/index", :collection => @nodes) %>
+
+</table>
+<% end -%>

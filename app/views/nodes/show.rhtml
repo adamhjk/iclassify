@@ -1,0 +1,26 @@
+<h1>Listing node <%= h @node.id %></h1>
+
+<table>
+  <tr>
+    <th>UUID</th><td><%= h @node.uuid %></td>
+  </tr>
+  <tr>
+    <th>Description</th><td><%= h @node.description %></td>
+  </tr>
+  <tr>
+    <th>Notes</th><td><%= h @node.notes %></td>
+  </tr>
+  <tr>
+    <th>Tags</th>
+    <td><% @node.tags.collect{|n| h n.name}.each do |t| %>
+    <%= t %><br/>
+    <% end %>
+    </td>
+  </tr>
+  <tr>
+    <th>Attributes</th><td><%= @node.attribs.collect { |a| "#{h a.name}: #{h a.avalues.collect {|v| v.value }.join(", ") }" }.join("<br />") %></td>
+  </tr>
+</table>
+<%= link_to 'Edit', edit_node_path(@node) %> |
+<%= link_to 'Destroy', node_path(@node), :confirm => 'Are you sure?', :method => :delete %> |
+<%= link_to 'Back', nodes_path %>

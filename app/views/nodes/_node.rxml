@@ -1,0 +1,24 @@
+xml = xml_instance
+xml.node(:link => node_url(node[:id]), :id => node[:id]) do
+  xml.id(node[:id])
+  xml.uuid(node[:uuid])
+  xml.description(node[:description])
+  xml.notes(node[:notes])
+  xml.tags do
+    node[:tags].each do |tag|
+      xml.tag(tag[:name], :link => tag_url(:node_id => node[:id], :id => tag[:id]), :id => tag[:id])
+    end
+  end
+  xml.attribs do
+    node[:attribs].each do |attrib|
+      xml.attrib(:link => attrib_url(:node_id => node[:id], :id => attrib[:id]), :id => attrib[:id]) do
+        xml.name(attrib[:name])
+        xml.values do
+          attrib[:values].each do |v|
+            xml.value(v)
+          end
+        end
+      end
+    end
+  end
+end

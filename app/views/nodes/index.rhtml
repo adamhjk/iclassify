@@ -1,0 +1,14 @@
+<h1>Listing nodes</h1>
+
+<table>
+  <tr>
+    <th>UUID</th><th>Description</th><th>Notes</th><th>Tags</th>
+  </tr>
+  
+<%= render :partial => "index", :collection => @nodes%>
+
+</table>
+
+<br />
+
+<%= link_to 'New node', new_node_path %>

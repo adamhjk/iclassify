@@ -1,0 +1,16 @@
+<legend>Node Information</legend>
+<table>
+    <tr class="line-even">
+<!--[form:node]-->
+<td><label for="node_uuid">UUID</label></td>
+<td id="node_uuid_tr"><%= form.text_field :uuid %></td>
+</tr>
+<tr class="line-odd">
+<td><label for="node_description">Description</label></td>
+<td><%= form.text_field :description %></td>
+</tr>
+<tr class="line-even">
+<td><label for="node_notes">Notes</label></td>
+<td><%= form.text_area :notes  %></td>
+</tr>
+</table>

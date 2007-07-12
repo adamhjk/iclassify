@@ -1,0 +1,25 @@
+<node>
+    <uuid>7FDA6C6A-F1B4-4F5B-BF49-787459EA74CC</uuid>
+    <description>evolution</description>
+    <notes>what about wilson</notes>
+    <tags>
+        <tag>again</tag>
+        <tag>alexander</tag>
+        <tag>woot</tag>
+        <tag>bishop</tag>
+    </tags>
+    <attribs>
+        <attrib>
+            <name>monkey</name>
+            <values>
+                <value>something</value>
+            </values>
+        </attrib>
+        <attrib>
+            <name>chocholate</name>
+            <values>
+                <value>man</value>
+            </values>
+        </attrib>
+    </attribs>
+</node>

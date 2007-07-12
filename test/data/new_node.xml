@@ -1,0 +1,33 @@
+<node>
+    <uuid>7FDA6C6A-F1B4-4F5B-BF49-787459EA74CC</uuid>
+    <description>what</description>
+    <notes>what about london and terror?</notes>
+    <tags>
+        <tag>again</tag>
+        <tag>alexander</tag>
+        <tag>monkey</tag>
+        <tag>poo</tag>
+        <tag>fighter</tag>
+    </tags>
+    <attribs>
+        <attrib>
+            <name>monkey</name>
+            <values>
+                <value>nuts</value>
+            </values>
+        </attrib>
+        <attrib>
+            <name>corona</name>
+            <values>
+                <value>coffee</value>
+            </values>
+        </attrib>
+        <attrib>
+            <name>chocholate</name>
+            <values>
+                <value>man</value>
+                <value>bunny</value>
+            </values>
+        </attrib>
+    </attribs>
+</node>

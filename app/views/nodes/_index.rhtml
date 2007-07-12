@@ -1,0 +1,9 @@
+<tr>
+  <td><%= h index.uuid %></td>
+  <td><%= h index.description %></td>
+  <td><%= h index.notes %></td>
+  <td><%= index.tags.collect {|n| h n.name }.join("<br />") %></td>
+  <td><%= link_to 'Show', node_path(index) %></td>
+  <td><%= link_to 'Edit', edit_node_path(index) %></td>
+  <td><%= link_to 'Destroy', node_path(index), :confirm => 'Are you sure?', :method => :delete %></td>
+</tr>

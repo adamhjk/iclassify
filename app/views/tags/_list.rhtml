@@ -1,0 +1,8 @@
+<table>
+    <% tags.each do |tag|%>
+    <tr>
+        <td><%= h tag.name %></td>
+        <td><%= link_to 'Remove', tag_path(:node_id => node, :id => tag.id), :confirm => 'Are you sure?', :method => :delete %></td>
+    </tr>
+    <% end %>
+</table>
