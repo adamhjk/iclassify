@@ -14,9 +14,16 @@ class Attrib < ActiveRecord::Base
   
   def self.create_missing_attribs(node, attribs, options=Hash.new)
     attrib_array = Array.new
-    attribs.each do |attrib_hash|       
-      attrib = Attrib.find(:first, :conditions => [ "node_id = ? and name = ?", node.id, attrib_hash['name'] ])
-      unless attrib
+    attribs.each do |attrib_hash|
+      attrib = nil
+      if node.id       
+        attrib = Attrib.find(:first, :conditions => [ "node_id = ? and name = ?", node.id, attrib_hash['name'] ]) 
+        unless attrib
+          attrib = node.attribs.new(
+             :name => attrib_hash['name']
+           )
+        end
+      else
         attrib = node.attribs.new(
           :name => attrib_hash['name']
         )
@@ -34,7 +41,7 @@ class Attrib < ActiveRecord::Base
           av.destroy unless attrib_hash['values']['value'].include?(av.value)
         end
       end
-      logger.debug("My doobie: #{attrib.to_yaml}")
+      logger.debug(" #{attrib.to_yaml}")
       attrib_array << attrib
     end
     attrib_array

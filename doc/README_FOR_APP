@@ -1,2 +1,11 @@
-Use this README file to introduce your application and point to useful places in the API for learning more.
-Run "rake appdoc" to generate API documentation for your models and controllers.
+To test:
+
+Get your database installed, call it iclassify_development
+
+Give it proper privileges, and edit database.yml
+
+Run rake db:migrate
+
+Run ./script/server
+
+Run ./bin/icagent

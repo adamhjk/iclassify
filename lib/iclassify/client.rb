@@ -10,7 +10,7 @@ module IClassify
      UUID_REGEX = /^[[:xdigit:]]{8}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{12}$/
   
     def initialize(service_url)
-      @url = service_url
+      @url = URI.parse(service_url)
     end
   
     def make_url(method, params)
@@ -19,7 +19,7 @@ module IClassify
     end
 
     def search(query)
-      get "search.xml", :q => query
+      IClassify::Node.from_search(post_rest("search", "<q>#{query}</q>"))
     end
     
     def get_node(node_id)
@@ -40,9 +40,9 @@ module IClassify
   
     private
     
-      def get_rest(path)
+      def get_rest(path, args=false)
         url = URI.parse("#{@url}/#{path}")
-        run_request(:get, url)
+        run_request(:get, url, args)
       end
       
       def delete_rest(path)
@@ -62,7 +62,11 @@ module IClassify
       
       def run_request(method, url, data=false)
         http = Net::HTTP.new(url.host, url.port)
-        res = http.send_request(method, url.path, data, { 'Content-Type' => 'application/xml', 'Accept' => 'application/xml' })
+        headers = { 
+          'Accept' => 'application/xml',
+          'Content-Type' => 'application/xml'
+        }
+        res = http.send_request(method, url.path, data, headers)
         case res
         when Net::HTTPSuccess
           res.body

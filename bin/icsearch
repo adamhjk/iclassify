@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+#
+# A very simple search utility for iclassify.
+#
+
+require 'rubygems'
+require File.dirname(__FILE__) + '/../lib/iclassify/client'
+require 'optparse'
+
+config = {
+  :server    => 'http://localhost:3000'
+}
+opts = OptionParser.new do |opts|
+  opts.banner = "Usage: #{$0} (options) query"
+  opts.on("-a one,two,three", "--attrib one,two,three", Array, "Attributes to print") do |a|
+    config[:attribs] = a 
+  end
+  opts.on("-t", "--tags", "Print tags or not, if attribs specified") do |t|
+    config[:tags] = t
+  end
+  opts.on("-s server", "--server server", "iClassify Server URL") do |s|
+    config[:server] = s
+  end
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+end
+args = ARGV
+opts.parse!(args)
+
+if args.length != 1
+  puts "You must specify a single query."
+  puts opts.help
+  exit 1
+end
+
+query = args[0]
+
+client = IClassify::Client.new(config[:server])
+results = client.search(query)
+if config.has_key?(:attribs)
+  header = "# uuid,#{config[:attribs].join(',')}"
+  header << ",tags" if config.has_key?(:tags)
+  puts header
+  results.each do |node|
+    line = [ "#{node.uuid}" ]
+    config[:attribs].each do |attrib|
+      na = node.attribs.detect { |a| a[:name] == attrib }
+      if na
+        line << "#{na[:values].join(':')}"
+      else
+        line << ""
+      end
+    end
+    line << "\"#{node.tags.join(' ')}\"" if config.has_key?(:tags)
+    puts line.join(",")
+  end
+  
+else
+  results.each do |node|
+    puts "#\n# Node #{node.uuid}\n#"
+    puts node.to_s
+  end
+end

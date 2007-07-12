@@ -11,6 +11,15 @@ module IClassify
       @tags ||= Array.new
       @attribs ||= Array.new
     end
+
+    def self.from_search(doc)
+      xml = REXML::Document.new(doc)
+      node_array = Array.new
+      xml.elements.each("//node") do |node|
+        node_array << Node.new(node)
+      end
+      node_array
+    end
     
     def to_xml
       xml = Builder::XmlMarkup.new
@@ -39,9 +48,28 @@ module IClassify
       end
       output
     end
+    
+    def to_s(tags=nil,attribs=nil)
+      output = String.new
+      output << "uuid: #{@uuid}\n"
+      output << "node_id: #{@node_id}\n"
+      output << "notes: #{@notes}\n"
+      output << "description: #{@description}\n"
+      output << "tags: #{@tags.join(' ')}\n"
+      output << "attribs:\n"
+      @attribs.each do |attrib|
+        output << "  #{attrib[:name]}: #{attrib[:values].join(', ')}\n"
+      end
+      output
+    end
         
     def from_xml(doc)
-      xml = REXML::Document.new(doc)
+      xml = nil
+      if doc.kind_of?(REXML::Element)
+        xml = doc
+      else
+        xml = REXML::Document.new(doc)
+      end
       @tags = xml.elements.collect('//tag') { |t| t.text }
       @uuid = xml.get_text('//uuid')
       @node_id   = xml.get_text('//id')
@@ -55,6 +83,6 @@ module IClassify
         @attribs << cattrib
       end
     end
-    
+      
   end
 end

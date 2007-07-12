@@ -5,13 +5,50 @@
 
 require 'rubygems'
 require File.dirname(__FILE__) + '/../lib/iclassify/agent'
+require 'optparse'
 
-agent = IClassify::Agent.new(File.dirname(__FILE__) + '/../icagent.uuid')
+config = {
+  :uuidfile  => File.dirname(__FILE__) + '/../icagent.uuid',
+  :server    => 'http://localhost:3000'
+}
+opts = OptionParser.new do |opts|
+  opts.banner = "Usage: #{$0} [-d DIR|-r FILE] (options)"
+  opts.on("-d DIRECTORY", "--directory DIRECTORY", "Path to icagent recipes") do |d|
+    config[:directory] = d 
+  end
+  opts.on("-r RECIPE", "--recipe RECIPE", "Path to a single icagent recipe") do |r|
+    config[:recipe] = r
+  end
+  opts.on("-u UUIDFILE", "--uuidfile UUIDFILE", "Path to the uuid file") do |u|
+    config[:uuidfile] = u
+  end
+  opts.on("-s SERVER", "--server", "iClassify Server URL") do |s|
+    config[:server] = s
+  end
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+end
+opts.parse!(ARGV)
+
+unless config.has_key?(:recipe) || config.has_key?(:directory)
+  puts "You must specify either a recipe (-r) or a directory (-d)"
+  puts opts
+  exit
+end
+
+agent = IClassify::Agent.new(config[:uuidfile], config[:server])
 agent.load
-agent.merge_facter
-ARGV.each do |f|
-  if File.exists?(f)
-    agent.run_script(f)
+if config.has_key?(:recipe)
+  agent.run_script(File.expand_path(f))
+end
+if config.has_key?(:directory)
+  Dir.foreach(config[:directory]) do |f|
+    file = File.expand_path(File.join(config[:directory], f))
+    if File.file?(file) && file !~ /^\./
+      agent.run_script(file)
+    end
   end
 end
 agent.update

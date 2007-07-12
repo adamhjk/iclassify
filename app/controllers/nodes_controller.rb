@@ -96,8 +96,6 @@ class NodesController < ApplicationController
     end
   end
   
-  
-  
   private
     
     def populate_tags_and_attribs(params=nil)
@@ -109,7 +107,8 @@ class NodesController < ApplicationController
       end
       if params[:node].has_key?(:attribs)
         ahash = params[:node].delete(:attribs)
-        attribs = ahash[:attrib]
+        attribs = [ ahash[:attrib] ]
+        attribs.flatten!
       end
       logger.debug("Attribs: #{attribs.to_yaml}")
       return tags, attribs
