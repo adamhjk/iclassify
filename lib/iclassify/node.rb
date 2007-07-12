@@ -11,15 +11,6 @@ module IClassify
       @tags ||= Array.new
       @attribs ||= Array.new
     end
-
-    def self.from_search(doc)
-      xml = REXML::Document.new(doc)
-      node_array = Array.new
-      xml.elements.each("//node") do |node|
-        node_array << Node.new(node)
-      end
-      node_array
-    end
     
     def to_xml
       xml = Builder::XmlMarkup.new
@@ -70,7 +61,8 @@ module IClassify
       else
         xml = REXML::Document.new(doc)
       end
-      @tags = xml.elements.collect('//tag') { |t| t.text }
+      @tags = Array.new
+      xml.elements.each('//tag') { |t| @tags << t.text }
       @uuid = xml.get_text('//uuid')
       @node_id   = xml.get_text('//id')
       @description = xml.get_text('//description')
@@ -79,7 +71,9 @@ module IClassify
       xml.elements.each('//attrib') do |attrib|
         cattrib = Hash.new
         cattrib[:name] = attrib.get_text('name').to_s
-        cattrib[:values] = attrib.elements.collect('values/value') { |v| v.text }
+        value_array = Array.new
+        attrib.elements.each('values/value') { |v| value_array << v.text }
+        cattrib[:values] = value_array 
         @attribs << cattrib
       end
     end

@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'uuid'
+require 'uuidtools'
 require File.dirname(__FILE__) + '/client'
 require File.dirname(__FILE__) + '/node'
 
@@ -19,7 +19,7 @@ module IClassify
           @uuid = line.chomp!
         end
       else
-        @uuid = UUID.new
+        @uuid = UUID.random_create
         File.open(uuidfile, "w") do |file|
           file.puts @uuid
         end

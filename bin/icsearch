@@ -55,8 +55,7 @@ if config.has_key?(:attribs)
     end
     line << "\"#{node.tags.join(' ')}\"" if config.has_key?(:tags)
     puts line.join(",")
-  end
-  
+  end 
 else
   results.each do |node|
     puts "#\n# Node #{node.uuid}\n#"

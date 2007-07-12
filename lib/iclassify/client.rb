@@ -1,7 +1,7 @@
 require 'rubygems'
-require 'rc_rest'
 require File.dirname(__FILE__) + '/node'
 require 'net/http'
+require 'rexml/document'
 require 'uri'
 
 module IClassify
@@ -19,7 +19,16 @@ module IClassify
     end
 
     def search(query)
-      IClassify::Node.from_search(post_rest("search", "<q>#{query}</q>"))
+      results = post_rest("search", "<q>#{query}</q>")
+      xml = REXML::Document.new(results)
+      node_array = Array.new
+      xml.elements.each("//node") do |node|
+        # TODO: Figure out why this needs to be a string.  It's
+        #       totally, completely bizzare, most likely because
+        #       I'm an idiot with XPath.
+        node_array << IClassify::Node.new(node.to_s)
+      end
+      node_array
     end
     
     def get_node(node_id)
