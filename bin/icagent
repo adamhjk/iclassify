@@ -44,9 +44,8 @@ if config.has_key?(:recipe)
   agent.run_script(File.expand_path(f))
 end
 if config.has_key?(:directory)
-  Dir.foreach(config[:directory]) do |f|
-    file = File.expand_path(File.join(config[:directory], f))
-    if File.file?(file) && file !~ /^\./
+  Dir.glob(File.join(File.expand_path(config[:directory]), '*.rb')).sort.each do |file|
+    if File.file?(file)
       agent.run_script(file)
     end
   end
