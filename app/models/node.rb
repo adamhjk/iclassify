@@ -11,6 +11,9 @@ class Node < ActiveRecord::Base
                       :message => "Must be a valid UUID"
                       
   acts_as_ferret :fields => [ :uuid, :notes, :description, :tag, :attrib ]
+  # FIXME: Acts as tree needs to be added, along with consolidating tags and
+  #        attribs.
+  # acts_as_tree   :order => :uuid 
   
   def tag
     tags.collect { |t| t.name }

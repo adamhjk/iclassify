@@ -33,10 +33,18 @@ end
 hostname = args[0]
 
 client = IClassify::Client.new(config[:server])
-results = client.search("attrib:\"hostname #{hostname}\"")
+# TODO: Refactor the search string when we get ferret doing the right with attribs.
+results = client.search("attrib:\"hostname #{hostname}\" OR attrib:\"fqdn #{hostname}\"")
 if results.length > 1
   STDERR.puts "Hostname #{hostname} has more than one node definition!"
   exit 10
+end
+# FIXME: This should go away when real support for parents/children shows up.
+base_node = client.search("description:\"Base node\"")
+if base_node.length == 1
+  base_node[0].tags.each do |tag|
+    results[0].tags << tag unless results[0].tags.detect { |t| t == tag }
+  end
 end
 results.each do |node|
   puts node.to_puppet
