@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'rexml/document'
 require 'builder'
+require 'yaml'
 
 module IClassify
   class Node
@@ -52,6 +53,20 @@ module IClassify
         output << "  #{attrib[:name]}: #{attrib[:values].join(', ')}\n"
       end
       output
+    end
+    
+    def to_puppet
+      output = Hash.new
+      output["classes"] = @tags
+      output["parameters"] = Hash.new
+      @attribs.each do |attrib|
+        if attrib[:values].length > 1
+          output["parameters"][attrib[:name]] = attrib[:values]
+        else
+          output["parameters"][attrib[:name]] = attrib[:values][0]
+        end
+      end
+      output.to_yaml
     end
         
     def from_xml(doc)

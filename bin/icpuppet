@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+#
+# Puppet node integration
+#
+
+require 'rubygems'
+require File.dirname(__FILE__) + '/../lib/iclassify/client'
+require 'optparse'
+
+config = {
+  :server    => 'http://localhost:3000'
+}
+args = ARGV
+opts = OptionParser.new do |opts|
+  opts.banner = "Usage: #{$0} [-s server] hostname"
+  opts.on("-s SERVER", "--server", "iClassify Server URL") do |s|
+    config[:server] = s
+  end
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+end
+opts.parse!(args)
+
+unless args.length == 1
+  puts "You must supply a hostname or fqdn.  You supplied: "
+  puts args.join(" ")
+  puts opts.help
+  exit 1
+end
+
+hostname = args[0]
+
+client = IClassify::Client.new(config[:server])
+results = client.search("attrib:\"hostname #{hostname}\"")
+if results.length > 1
+  STDERR.puts "Hostname #{hostname} has more than one node definition!"
+  exit 10
+end
+results.each do |node|
+  puts node.to_puppet
+end
+exit 0
