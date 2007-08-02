@@ -64,7 +64,7 @@ module IClassify
     # Returns the values for this attribute, if it exists for this node.
     def attrib?(attrib)
       na = @node.attribs.detect { |a| a[:name] == attrib }
-      na.values
+      na ? na.values : nil
     end
     
     # Returns the value if the given attribute has a given attribute.
