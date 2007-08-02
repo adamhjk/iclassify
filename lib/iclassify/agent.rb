@@ -35,7 +35,7 @@ module IClassify
       rescue Net::HTTPFatalError
         @node = IClassify::Node.new()
         @node.description = "New Node"
-        @node.tags << "unconfigured"
+        @node.tags << "unclassified"
         @node.uuid = @uuid
       end
     end
@@ -44,6 +44,11 @@ module IClassify
     # Updates this node in the iClassify service.
     #
     def update
+      if @node.description == "New Node"
+        hostname = attrib?("hostname")
+        hostname ||= "New Node"
+        @node.description = hostname
+      end
       @client.update_node(@node)
     end 
     
@@ -61,10 +66,17 @@ module IClassify
       @node.tags.detect { |t| t == tag }
     end
     
-    # Returns the values for this attribute, if it exists for this node.
+    # Returns the values for this attribute, if it exists for this node.  If
+    # there is only one, it will return it, if it's an array, you get the 
+    # array. You have to check!
     def attrib?(attrib)
       na = @node.attribs.detect { |a| a[:name] == attrib }
-      na ? na.values : nil
+      return nil unless na
+      if na.length > 1
+        return na.values
+      else
+        return na.values[0]
+      end
     end
     
     # Returns the value if the given attribute has a given attribute.

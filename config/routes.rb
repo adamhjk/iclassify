@@ -56,6 +56,21 @@ ActionController::Routing::Routes.draw do |map|
       attribs.resources :avalues
     end
   end
+  
+  map.connect '', 
+    :controller => "dashboard",
+    :action => "index",
+    :conditions => { :method => :get }
+    
+  map.connect 'dashboard',
+    :controller => "dashboard",
+    :action => "index",
+    :conditions => { :method => :get }
+    
+  map.connect 'dashboard/bulk_tag',
+    :controller => "dashboard",
+    :action => "bulk_tag",
+    :conditions => { :method => :post }
     
   # The priority is based upon order of creation: first created -> highest priority.
   

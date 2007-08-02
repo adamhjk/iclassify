@@ -1,6 +1,4 @@
-<% form_tag url_for(:controller => "search"), :method => 'get' do -%>
-    Query: <%= text_field_tag :q, params[:q] %> <%= submit_tag "Search" %>
-<% end -%>
+<%= render :partial => "search_form" %>
 
 <% if @nodes -%>
 <h1>Search Results</h1>

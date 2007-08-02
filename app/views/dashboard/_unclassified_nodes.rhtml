@@ -1,0 +1,19 @@
+<% form_tag(url_for(:controller => "dashboard", :action => "bulk_tag"), :id => "bulk_tag") do %>
+<script type="text/javascript" charset="utf-8">
+    function select_all_tag_nodes(value) {
+        tag_elems = $("bulk_tag").getElementsBySelector("input.tag_node")
+        for (var x = 0; x < tag_elems.length; x++) {
+           tag_elems[x].checked = value
+        }
+    }
+</script>
+<%= link_to_function("Select All Nodes", 'select_all_tag_nodes(true)')%> or
+<%= link_to_function("Unselect All Nodes", 'select_all_tag_nodes(false)')%> <br/>
+ 
+    <% unclassified_nodes.each do |node| -%>
+        <%= check_box_tag(:tag_nodes, node.id, false, :class => "tag_node") %> 
+        <%= link_to("#{h node.description} (#{h node.uuid})", node_path(node)) %> <br/>
+    <% end -%>
+    <h2>Tags</h2>
+    <%= render :partial => "tags/ajax_form", :locals => { :current_tags => Array.new, :tags => @tags } %>
+<% end %>

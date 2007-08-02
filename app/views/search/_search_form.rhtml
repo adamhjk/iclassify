@@ -1,0 +1,3 @@
+<% form_tag(url_for(:controller => "search"), :method => 'get') do -%>
+    <%= text_field_tag :q, params[:q] %> <%= submit_tag "Search" %>
+<% end -%>
