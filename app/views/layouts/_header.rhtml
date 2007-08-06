@@ -1,0 +1,12 @@
+<div id="header">
+    <div id="logo">
+        <h1><%= link_to 'iClassify', url_for(:controller => 'dashboard', :action => 'index') %></h1>
+    </div>
+    <div id="search">
+        <%= link_to 'List Nodes', nodes_path %> | 
+        <%= link_to 'Create a new node', new_node_path %>
+        <%= render :partial => "search/search_form" %>
+    </div>
+</div>
+
+

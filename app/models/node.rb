@@ -29,6 +29,14 @@ class Node < ActiveRecord::Base
     resultset
   end
   
+  def self.bulk_tag(node_ids, tags)
+    node_ids.each do |node_id|
+      node = find(node_id.to_i)
+      node.tags = tags
+      node.save
+    end
+  end
+  
   # Tages an array of tag objects, and updates this node with them.
   # Checks to make sure that a tag isn't applied twice.
   def update_tags(tag_list)

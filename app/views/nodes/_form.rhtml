@@ -1,16 +1,16 @@
-<legend>Node Information</legend>
+<h2>Node Information</h2>
 <table>
     <tr class="line-even">
 <!--[form:node]-->
-<td><label for="node_uuid">UUID</label></td>
-<td id="node_uuid_tr"><%= form.text_field :uuid %></td>
+<td><label for="node_uuid">UUID:</label></td>
+<td id="node_uuid_tr"><%= form.text_field :uuid, :size => 42 %></td>
 </tr>
 <tr class="line-odd">
-<td><label for="node_description">Description</label></td>
+<td><label for="node_description">Description:</label></td>
 <td><%= form.text_field :description %></td>
 </tr>
 <tr class="line-even">
-<td><label for="node_notes">Notes</label></td>
-<td><%= form.text_area :notes  %></td>
+<td><label for="node_notes">Notes:</label></td>
+<td><%= form.text_area :notes, :cols => "40", :rows => "10" %></td>
 </tr>
 </table>

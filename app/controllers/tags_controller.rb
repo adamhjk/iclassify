@@ -25,7 +25,7 @@ class TagsController < ApplicationController
   # POST /nodes/:node_id/tags
   # POST /nodes/:node_id/tags.xml
   def create
-    tag_set = Tag.create_missing_tags(params[:tag][:tag_list].split(' '))
+    tag_set = Tag.create_missing_tags(params[:tag_list].split(' '))
     
     if @node.update_tags(tag_set)
       redirect_to node_url(@node)

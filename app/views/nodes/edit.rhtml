@@ -1,25 +1,21 @@
-<h1>Editing node</h1>
 
-<div id="node_data">
+<div class="section_box">
+    <h1>Editing <%= link_to "#{h @node.description} (#{h @node.uuid})", node_path(@node) %></h1>
+    
+    
 <%= error_messages_for :node %>
 
+<div id="node_information" class="fieldset">
 <% form_for(:node, :url => node_path(@node), :html => { :method => :put }) do |f| %>
-<fieldset>
     <%= render :partial => "form", :locals => { :form => f } %>
     <%= submit_tag "Update Node Information" %>
-</fieldset>
 <% end %>
 </div>
+
 <div id="new_tag_data">
     <% form_for :tag, :url => tags_url(:node_id => @node) do |form| %>
-    <%= render :partial => "/tags/form", :locals => { :node => @node, :form => form }%>
+    <%= render :partial => "/tags/form", :locals => { :node => @node, :current_tags => @node.tags, :tags => Tag.find(:all), :form => form, :legend => "Tags" }%>
     <% end %>
-</div>
-<div id="edit_tag">
-    <fieldset>
-        <legend>Edit Tags</legend>
-    <%= render :partial => "/tags/list", :locals => { :node => @node, :tags => @node.tags }%>
-    </fieldset>
 </div>
 <div id="new_attribute_data">
     <fieldset>
@@ -33,7 +29,6 @@
 <div id="edit_attributes">
     <%= render :partial => "attrib", :collection => @node.attribs %>
 </div>
+</div>
 
-
-<%= link_to 'Show', node_path(@node) %> |
 <%= link_to 'Back', nodes_path %>

@@ -10,14 +10,7 @@
 </head>
 <body>
     
-<div id="header">
-    <div id="logo">
-        <h1>iClassify</h1>
-    </div>
-    <div id="search">
-        <%= render :partial => "search/search_form" %>
-    </div>
-</div>
+<%= render :partial => "layouts/header" %>
 
 <div id="content">
 <p style="color: green"><%= flash[:notice] %></p>

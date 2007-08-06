@@ -1,2 +1,4 @@
+<div class="section_box">
 <h1>Unclassified Nodes</h1>
-<%= render :partial => "unclassified_nodes", :locals => { :unclassified_nodes => @unclassified_nodes } %>
+<%= render(:partial => "unclassified_nodes", :locals => { :unclassified_nodes => @unclassified_nodes, :tags => @tags }) %>
+</div>

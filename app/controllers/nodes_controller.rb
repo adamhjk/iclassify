@@ -29,6 +29,7 @@ class NodesController < ApplicationController
   # GET /nodes/1;edit
   def edit
     @node = Node.find(params[:id])
+    @tags = @node.tag
   end
 
   # POST /nodes
@@ -52,17 +53,28 @@ class NodesController < ApplicationController
   # PUT /nodes/1
   # PUT /nodes/1.xml
   def update
-    tags, attribs = populate_tags_and_attribs(params)
     @node = Node.find(params[:id])
 
     respond_to do |format|
-      if @node.update_with_tags_and_attribs(params[:node], tags, attribs)
-        flash[:notice] = 'Node was successfully updated.'
-        format.html { redirect_to node_url(@node) }
-        format.xml  { head :ok }
+      if params[:node].has_key?(:tags) && params[:node].has_key?(:attribs)
+        tags, attribs = populate_tags_and_attribs(params)
+        if @node.update_with_tags_and_attribs(params[:node], tags, attribs)
+          flash[:notice] = 'Node was successfully updated.'
+          format.html { redirect_to node_url(@node) }
+          format.xml  { head :ok }
+        else
+          format.html { render :action => "edit" }
+          format.xml  { render :xml => @node.errors.to_xml }
+        end
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @node.errors.to_xml }
+        if @node.update_attributes(params[:node])
+          flash[:notice] = 'Node was successfully updated.'
+          format.html { redirect_to node_url(@node) }
+          format.xml  { head :ok }
+        else
+          format.html { render :action => "edit" }
+          format.xml  { render :xml => @node.errors.to_xml }
+        end
       end
     end
   end
@@ -96,6 +108,14 @@ class NodesController < ApplicationController
     end
   end
   
+  def bulk_tag
+    if param[:tag_nodes]
+    else
+      flash[:notice] = "No nodes to tag!"
+      format.html { render :action }
+    end
+  end
+  
   private
     
     def populate_tags_and_attribs(params=nil)
@@ -107,7 +127,7 @@ class NodesController < ApplicationController
       end
       if params[:node].has_key?(:attribs)
         ahash = params[:node].delete(:attribs)
-        attribs = [ ahash[:attrib] ]
+        attribs = ahash.kind_of?(Hash) ? [ ahash[:attrib] ] : Array.new
         attribs.flatten!
       end
       logger.debug("Attribs: #{attribs.to_yaml}")

@@ -67,9 +67,9 @@ ActionController::Routing::Routes.draw do |map|
     :action => "index",
     :conditions => { :method => :get }
     
-  map.connect 'dashboard/bulk_tag',
+  map.connect 'dashboard/bulk_tag_unclassified',
     :controller => "dashboard",
-    :action => "bulk_tag",
+    :action => "bulk_tag_unclassified",
     :conditions => { :method => :post }
     
   # The priority is based upon order of creation: first created -> highest priority.

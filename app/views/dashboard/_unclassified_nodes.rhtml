@@ -1,19 +1,25 @@
-<% form_tag(url_for(:controller => "dashboard", :action => "bulk_tag"), :id => "bulk_tag") do %>
-<script type="text/javascript" charset="utf-8">
-    function select_all_tag_nodes(value) {
-        tag_elems = $("bulk_tag").getElementsBySelector("input.tag_node")
-        for (var x = 0; x < tag_elems.length; x++) {
-           tag_elems[x].checked = value
-        }
-    }
-</script>
+<div id="bulk_tag">
+<% if unclassified_nodes.length > 0 -%>
+<p id="bulk_tags_notice" style="color: green"><%= flash[:bulk_tags_notice] %></p>
+<form action="<%= url_for(:controller => 'dashboard', :action => 'bulk_tag_unclassified') %>" method="post" 
+    onsubmit="new Ajax.Request('<%= url_for(:controller => 'dashboard', :action => 'bulk_tag_unclassified') %>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this), 
+        onCreate: $('tag_widget_spinner').setStyle({display: 'inline'}), onComplete: $('tag_widget_spinner').setStyle({display: 'none'})}); return false;">
+
+<div id="node_listing" class="fieldset">
+    <h2>Nodes</h2>
 <%= link_to_function("Select All Nodes", 'select_all_tag_nodes(true)')%> or
 <%= link_to_function("Unselect All Nodes", 'select_all_tag_nodes(false)')%> <br/>
  
     <% unclassified_nodes.each do |node| -%>
         <%= check_box_tag(:tag_nodes, node.id, false, :class => "tag_node") %> 
-        <%= link_to("#{h node.description} (#{h node.uuid})", node_path(node)) %> <br/>
+        <%= link_to("#{h node.description} (#{h node.uuid})", node_path(node)) %> 
+        (<%= link_to 'Edit', edit_node_path(node) %>, <%= link_to 'Delete', node_path(node), :confirm => 'Are you sure?', :method => :delete %>) 
+        <br/>
     <% end -%>
-    <h2>Tags</h2>
-    <%= render :partial => "tags/ajax_form", :locals => { :current_tags => Array.new, :tags => @tags } %>
-<% end %>
+    <%= render :partial => "tags/form", :locals => { :current_tags => Array.new, :tags => @tags, :legend => "Bulk Tag (applies to all selected nodes)" } %>
+</div>
+</form>
+<% else -%>
+No unclassified nodes.
+<% end -%>
+</div>
