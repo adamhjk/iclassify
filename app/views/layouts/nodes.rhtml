@@ -4,21 +4,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title>iClassify: Dashboard</title>
+  <title>iClassify: Node</title>
   <%= stylesheet_link_tag 'iclassify' %>
   <%= javascript_include_tag :defaults %>
 </head>
 <body>
     
-<div id="header">
-    <div id="logo">
-        <h1>iClassify</h1>
-    </div>
-    <div id="search">
-        <%= link_to 'Create a new node', new_node_path %>
-        <%= render :partial => "search/search_form" %>
-    </div>
-</div>
+<%= render :partial => "layouts/header" %>
+
 
 <div id="content">
 <p style="color: green"><%= flash[:notice] %></p>

@@ -1,21 +1,18 @@
-<fieldset>
-  <legend>Edit Attribute '<%= h attrib.name %>'</legend>
+  <h2>Edit Attribute '<%= h attrib.name %>'</h2> (<%= link_to_remote 'Remove Attribute', :url => attrib_url(:node_id => @node.id, :id => attrib.id), :method => :delete %>)
+  <p style="color: green" id="attrib_edit_<%= attrib.id %>_notice"><%= flash["attrib_edit_#{attrib.id}_notice".to_sym] %></p> 
 <%= error_messages_for :attrib %>
 <% attrib.avalues.each do |avalue| %>
 <%= error_messages_for :avalue %>
-<% form_for :avalue, avalue, :url => avalue_url(:node_id => @node.id, :attrib_id => attrib.id, :id => avalue.id), :html => { :method => 'put' } do |form| %>
-<%= render :partial => 'avalues/form', :locals => { :attrib => attrib, :node => @node, :form => form }  %>
-<%= submit_tag "Update" %>
-<%= link_to 'Remove', avalue_url(:node_id => @node.id, :attrib_id => attrib.id, :id => avalue.id), :confirm => 'Are you sure?', :method => :delete %>
-<% end %>
+    <% remote_form_for :avalue, avalue, :url => avalue_url(:node_id => @node.id, :attrib_id => attrib.id, :id => avalue.id), :html => { :method => 'put' } do |form| %>
+    <%= render :partial => 'avalues/form', :locals => { :attrib => attrib, :node => @node, :form => form }  %>
+    <%= submit_tag "Update" %>
+    <%= link_to_remote 'Remove', :url => avalue_url(:node_id => @node.id, :attrib_id => attrib.id, :id => avalue.id), :method => :delete %>
+    <% end %>
 <% end %>
 
-<fieldset>
-  <legend>Add Value</legend>
+  <h3>Add Value</h3>
 <%= error_messages_for :avalue %>
-<% form_for :avalue, attrib.avalues.new, :url => avalues_url(:node_id => @node.id, :attrib_id => attrib.id), :html => { :method => 'post' } do |form| %>
+<% remote_form_for :avalue, attrib.avalues.new, :url => avalues_url(:node_id => @node.id, :attrib_id => attrib.id), :html => { :method => 'post' } do |form| %>
 <%= render :partial => 'avalues/form', :locals => { :attrib => attrib, :node => @node, :form => form }  %>
 <%= submit_tag "Add" %>
 <% end %>
-</fieldset>
-</fieldset>

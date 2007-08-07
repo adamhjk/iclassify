@@ -17,18 +17,17 @@
     <%= render :partial => "/tags/form", :locals => { :node => @node, :current_tags => @node.tags, :tags => Tag.find(:all), :form => form, :legend => "Tags" }%>
     <% end %>
 </div>
+
 <div id="new_attribute_data">
-    <fieldset>
-        <legend>Add an Attribute</legend>
-    <% form_for :attrib, :url => attribs_url(:node_id => @node) do |form| %>
+    <div id="Add an Attribute" class="fieldset">
+        <h2>Add an Attribute</h2>
+    <% remote_form_for :attrib, :url => attribs_url(:node_id => @node) do |form| %>
     <%= render :partial => "/attribs/form", :locals => { :node => @node, :form => form }%>
     <%= submit_tag "Add Attribute "%>
     <% end%>
-    </fieldset>
 </div>
-<div id="edit_attributes">
-    <%= render :partial => "attrib", :collection => @node.attribs %>
+<div id="attributes_list">
+    <%= render :partial => "attrib_list", :locals => { :node => @node }%>
 </div>
 </div>
-
-<%= link_to 'Back', nodes_path %>
+</div>

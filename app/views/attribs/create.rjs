@@ -1,0 +1,6 @@
+page.replace_html(
+  "attributes_list", 
+  :partial => "nodes/attrib_list", 
+  :locals => { :node => @node }
+)
+page["attrib_edit_#{@attrib.id}_notice".to_sym].visual_effect(:highlight, :startcolor => "#88ff88", :endcolor => "#FFFFFF")

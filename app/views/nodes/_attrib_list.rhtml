@@ -1,0 +1,8 @@
+<p style="color: green" id="attribute_notice"><%= flash[:attribute_notice] %></p> 
+<div id="edit_attributes">
+    <% node.attribs.sort { |a,b| a.name <=> b.name }.each do |attrib| -%>
+    <div id="attrib_edit_<%= attrib.id %>" class="fieldset">
+    <%= render :partial => "nodes/attrib", :locals => { :attrib => attrib }%>
+    </div>
+    <% end -%>
+</div>

@@ -23,7 +23,8 @@ class AttribsController < ApplicationController
     @attrib = Attrib.new(params[:attrib])
     
     if (@node.attribs << @attrib)
-      redirect_to node_url(@node)
+      flash[:attribute_notice] = "Added attribute #{@attrib.name}"
+      redirect_to(node_url(@node)) unless request.xhr?
     else
       render :action => :new
     end
@@ -43,8 +44,9 @@ class AttribsController < ApplicationController
   # DELETE /nodes/:node_id/attribs/1
   # DELETE /nodes/:node_id/attribs/1.xml
   def destroy
-    @node.attribs.find(params[:id]).destroy
-    redirect_to node_url(@node)
+    @attrib = @node.attribs.find(params[:id]).destroy
+    flash[:attribute_notice] = "Removed attribute #{@attrib.name}"
+    redirect_to node_url(@node) unless request.xhr?
   end
   
   private

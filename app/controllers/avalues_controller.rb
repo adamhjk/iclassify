@@ -23,7 +23,8 @@ class AvaluesController < ApplicationController
    @avalue = Avalue.new(params[:avalue])
    
    if (@attrib.avalues << @avalue)
-     redirect_to attribs_url(:node_id => @node.id)
+     flash["attrib_edit_#{@attrib.id}_notice".to_sym] = "Added a value"
+     redirect_to node_url(@node) unless request.xhr?
    else
      render :action => :new
    end
@@ -34,7 +35,8 @@ class AvaluesController < ApplicationController
  def update
    @avalue = @attrib.avalues.find(params[:id])
    if @avalue.update_attributes(params[:avalue])
-     redirect_to attribs_url(:node_id => @node.id)
+     flash["attrib_edit_#{@attrib.id}_notice".to_sym] = "Changed a value"
+     redirect_to attribs_url(:node_id => @node.id) unless request.xhr?
    else
      render :action => :edit
    end
@@ -44,7 +46,8 @@ class AvaluesController < ApplicationController
  # DELETE /nodes/:node_id/attribs/1.xml
  def destroy
    @attrib.avalues.find(params[:id]).destroy
-   redirect_to attribs_url(:node_id => @node.id)
+   flash["attrib_edit_#{@attrib.id}_notice".to_sym] = "Removed a value."
+   redirect_to attribs_url(:node_id => @node.id) unless request.xhr?
  end
  
  private
