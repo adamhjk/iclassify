@@ -8,3 +8,5 @@
 * Add copious amounts of spinner.gif during ajax calls.
 * Document building icagent recipies
 * Allow icsearch to suppress UUID output
+* Allow for different changetypes on calls to /nodes (merge, replace) API
+* Allow for calls to specific attribs and tags via the API
