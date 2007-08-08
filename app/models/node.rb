@@ -49,7 +49,7 @@ class Node < ActiveRecord::Base
       
       # Add attribute fields
       attribs.each do |attrib|
-        if attrib.name != "id" || attrib.name != "class_name"
+        if attrib.name != "id" && attrib.name != "class_name"
           doc[attrib.name] = attrib.avalues.collect {|av| av.value}
         end
       end
