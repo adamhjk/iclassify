@@ -48,7 +48,7 @@ class TagsController < ApplicationController
     else
       tag_set = Tag.create_missing_tags(params[:tag_list].split(' '))
       @node.tags = tag_set
-      result = true
+      result = @node.save
     end
     if result
       redirect_to node_url(@node)
