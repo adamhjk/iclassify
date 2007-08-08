@@ -28,8 +28,7 @@ class Node < ActiveRecord::Base
                       :message => "Must be a valid UUID"
                       
   acts_as_ferret :fields => [ :uuid, :notes, :description, :tag ]
-  # FIXME: Acts as tree needs to be added, along with consolidating tags and
-  #        attribs.
+  # FIXME: Acts as tree needs to be added.
   # acts_as_tree   :order => :uuid 
   
   # turn this instance into a ferret document (which basically is a hash of
@@ -50,7 +49,9 @@ class Node < ActiveRecord::Base
       
       # Add attribute fields
       attribs.each do |attrib|
-        doc[attrib.name] = attrib.avalues.collect {|av| av.value}
+        if attrib.name != "id" || attrib.name != "class_name"
+          doc[attrib.name] = attrib.avalues.collect {|av| av.value}
+        end
       end
     end
   end
