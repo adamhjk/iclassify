@@ -1,7 +1,8 @@
 #
-# Load all the facter facts
+# A simple icagent recipe.  Takes all the facter facts and submits them to
+# iClassify.
 #
-
+  
 require 'rubygems'
 require 'facter'
 

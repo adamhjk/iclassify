@@ -1,5 +1,6 @@
 tmp/*
 log/*
 db/iclassify_*
+db/schema.rb
 icagent.uuid
 index/*
