@@ -51,22 +51,22 @@ module IClassify
     
       def get_rest(path, args=false)
         url = URI.parse("#{@url}/#{path}")
-        run_request(:get, url, args)
+        run_request(:GET, url, args)
       end
       
       def delete_rest(path)
         url = URI.parse("#{@url}/#{path}")
-        run_request(:delete, url)
+        run_request(:DELETE, url)
       end 
       
       def post_rest(path, xml)
         url = URI.parse("#{@url}/#{path}")
-        run_request(:post, url, xml)
+        run_request(:POST, url, xml)
       end
       
       def put_rest(path, xml)
         url = URI.parse("#{@url}/#{path}")
-        run_request(:put, url, xml)
+        run_request(:PUT, url, xml)
       end
       
       def run_request(method, url, data=false)
