@@ -17,9 +17,12 @@ module Remote
       # reads connection settings from config file
       def load(file = "#{RAILS_ROOT}/config/ferret_server.yml")
         config = DEFAULTS.merge(YAML.load(ERB.new(IO.read(file)).result))
-        if config = config[RAILS_ENV]
+        if config.has_key?(RAILS_ENV)
+          config = config[RAILS_ENV]
           config[:uri] = "druby://#{config['host']}:#{config['port']}"
           return config
+        else
+          return nil
         end
       end
     end
