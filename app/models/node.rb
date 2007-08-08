@@ -27,7 +27,9 @@ class Node < ActiveRecord::Base
                       :with    => UUID_REGEX,
                       :message => "Must be a valid UUID"
                       
-  acts_as_ferret :fields => [ :uuid, :notes, :description, :tag ]
+  acts_as_ferret(
+    { :fields => [ :uuid, :notes, :description, :tag ], :remote => true },
+  )
   # FIXME: Acts as tree needs to be added.
   # acts_as_tree   :order => :uuid 
   
