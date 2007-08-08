@@ -1,26 +1,47 @@
-<h1>Listing node <%= h @node.id %></h1>
+<div class="section_box">
+<h1>Node <%= h @node.description %> (<%= h @node.uuid %>)</h1>
+[<%= link_to 'Edit', edit_node_path(@node) %>, <%= link_to 'Delete', node_path(@node), :confirm => 'Are you sure?', :method => :delete %>]
 
-<table>
-  <tr>
+<table class="node_display">
+  <tr class="odd">
     <th>UUID</th><td><%= h @node.uuid %></td>
   </tr>
   <tr>
     <th>Description</th><td><%= h @node.description %></td>
   </tr>
-  <tr>
+  <tr class="odd">
     <th>Notes</th><td><%= h @node.notes %></td>
   </tr>
-  <tr>
-    <th>Tags</th>
-    <td><% @node.tags.collect{|n| h n.name}.each do |t| %>
-    <%= t %><br/>
-    <% end %>
-    </td>
-  </tr>
-  <tr>
-    <th>Attributes</th><td><%= @node.attribs.collect { |a| "#{h a.name}: #{h a.avalues.collect {|v| v.value }.join(", ") }" }.join("<br />") %></td>
-  </tr>
 </table>
-<%= link_to 'Edit', edit_node_path(@node) %> |
-<%= link_to 'Destroy', node_path(@node), :confirm => 'Are you sure?', :method => :delete %> |
-<%= link_to 'Back', nodes_path %>
+
+<% if @node.tags.length > 0 -%>
+<h2>Tags</h2>
+<table class="node_display">
+    <% tr_odd = true -%>
+    <% @node.tags.collect {|n| h n.name}.sort.each do |t| %>
+    <tr class="<%= "odd" if tr_odd %>">
+     <td><%= t %></td>
+    </tr>
+    <% tr_odd = tr_odd ? false : true -%> 
+    <% end -%>
+</table>
+<% else -%>
+<h2>No Tags</h2>
+<% end -%>
+
+<% if @node.attribs.length > 0 -%>
+<h2>Attributes</h2>
+<table class="node_display">
+    <% tr_odd = true -%>
+    <% @node.attribs.sort {|a,b| a.name <=> b.name }.each do |a| -%>
+    <tr class="<%= "odd" if tr_odd %>">
+    <th><%= h a.name %></th>
+    <td><div class="attrib_values"><%= a.avalues.collect { |av| "#{h av.value}" }.join("<br/>") %> </div></td>
+    </tr>
+    <% tr_odd = tr_odd ? false : true -%> 
+    <% end -%> 
+</table>
+<% else -%>
+<h2>No Attributes</h2>
+<% end -%>
+</div>

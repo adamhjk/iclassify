@@ -25,6 +25,9 @@ opts = OptionParser.new do |opts|
   opts.on("-s SERVER", "--server", "iClassify Server URL") do |s|
     config[:server] = s
   end
+  opts.on("-n", "--no-action", "Don't update anything, just print.") do |n|
+    config[:dryrun] = true
+  end
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
     exit
@@ -41,7 +44,7 @@ end
 agent = IClassify::Agent.new(config[:uuidfile], config[:server])
 agent.load
 if config.has_key?(:recipe)
-  agent.run_script(File.expand_path(f))
+  agent.run_script(File.expand_path(config[:recipe]))
 end
 if config.has_key?(:directory)
   Dir.glob(File.join(File.expand_path(config[:directory]), '*.rb')).sort.each do |file|
@@ -50,4 +53,8 @@ if config.has_key?(:directory)
     end
   end
 end
-agent.update
+if config.has_key?(:dryrun) && config[:dryrun]
+  puts agent.to_s
+else
+  agent.update
+end

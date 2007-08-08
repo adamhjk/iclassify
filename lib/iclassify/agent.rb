@@ -72,11 +72,16 @@ module IClassify
     def attrib?(attrib)
       na = @node.attribs.detect { |a| a[:name] == attrib }
       return nil unless na
-      if na.length > 1
-        return na.values
+      if na[:values].length > 1
+        return na[:values]
       else
-        return na.values[0]
+        return na[:values][0]
       end
+    end
+    
+    # Returns the current node as a string.
+    def to_s
+      @node.to_s
     end
     
     # Returns the value if the given attribute has a given attribute.

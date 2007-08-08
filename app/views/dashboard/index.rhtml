@@ -1,4 +1,8 @@
 <div class="section_box">
 <h1>Unclassified Nodes</h1>
-<%= render(:partial => "unclassified_nodes", :locals => { :unclassified_nodes => @unclassified_nodes, :tags => @tags }) %>
+<%= render(:partial => "unclassified_nodes", :locals => { :nodes => @unclassified_nodes, :tags => @tags }) %>
+</div>
+<div class="section_box">
+<h1>All Nodes</h1>
+<%= render :partial => "nodes/listing", :locals => { :nodes => @all_nodes.sort { |a,b| a.description <=> b.description } }%>
 </div>

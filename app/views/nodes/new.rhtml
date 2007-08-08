@@ -1,12 +1,12 @@
+<div class="section_box">
 <h1>New node</h1>
 
 <%= error_messages_for :node %>
 
 <% form_for(:node, :url => nodes_path) do |f| %>
-<fieldset>
+<div class="fieldset">
     <%= render :partial => "form", :locals => { :form => f } %>
     <%= submit_tag "Create Node" %>
-</fieldset>
+</div>
 <% end %>
-
-<%= link_to 'Back', nodes_path %>
+</div>

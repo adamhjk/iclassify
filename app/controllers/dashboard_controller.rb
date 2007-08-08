@@ -7,7 +7,7 @@ class DashboardController < ApplicationController
     @unclassified_nodes = get_unclassified_nodes()
     @tags = Tag.find(:all)
     @tags ||= Array.new
-    @node_pages, @nodes = paginate(:nodes, :order => 'description', :per_page => 20)
+    @all_nodes = Node.find(:all)
     
     respond_to do |format|
       format.html # index.rhtml
@@ -15,7 +15,7 @@ class DashboardController < ApplicationController
     end
   end
   
-  def bulk_tag_unclassified
+  def bulk_tag
     if params[:tag_nodes] && params[:tag_list]
       tag_nodes = params[:tag_nodes].kind_of?(Array) ? params[:tag_nodes] : [ params[:tag_nodes] ]
       tags = Tag.create_missing_tags(params[:tag_list].split(" "))
@@ -24,13 +24,23 @@ class DashboardController < ApplicationController
       redirect_to(url_for(:controller => "dashboard", :action => "index")) unless request.xhr?
       @tags = Tag.find(:all)
       @tags ||= Array.new
-      @unclassified_nodes = get_unclassified_nodes()
+      @nodes = Node.find_by_contents(params[:search_query])
+      if params[:search_query] == "tag:unclassified"
+        @partial_to_render = "dashboard/unclassified_nodes"
+      else
+        @partial_to_render = "search/bulk_tag"
+      end
     else
       flash[:bulk_tags_notice] = "You must select some nodes to tag!"
       redirect_to(url_for(:controller => "dashboard", :action => "index")) unless request.xhr?
       @tags = Tag.find(:all)
       @tags ||= Array.new
-      @unclassified_nodes = get_unclassified_nodes()
+      @nodes = Node.find_by_contents(params[:search_query])
+      if params[:search_query] == "tag:unclassified"
+        @partial_to_render = "dashboard/unclassified_nodes"
+      else
+        @partial_to_render = "search/bulk_tag"
+      end
     end
   end
   

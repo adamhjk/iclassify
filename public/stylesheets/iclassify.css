@@ -123,10 +123,11 @@ div#logo h1 a:hover { color: #FF690A; text-decoration: underline; }
 div.section_box {
   border: 1px solid #7BDEEE;
   padding: 10px;
+  margin: 5px;
 }
 
 div.section_box h1 {
-  font: 150% "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+  font: normal normal bold 150% "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
   margin: 0px 0px;
   min-width: 700px;
 }
@@ -174,3 +175,25 @@ img.spinner {
   display: none;
 }
 
+table.node_display {
+  border: 1px solid black;
+  margin: 5px;
+}
+
+table.node_display tr.odd {
+  background-color: #DDD;
+}
+
+table.node_display th {
+  vertical-align: top;
+  text-align: center;
+}
+
+div.attrib_values {
+  width: 500px;
+  overflow: auto;
+}
+
+div.section_box h2 {
+  font: normal normal bold 125% Arial, sans-serif;
+}
