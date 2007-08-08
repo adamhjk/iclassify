@@ -1,0 +1,104 @@
+Installing iClassify
+--------------------
+
+Prerequisites
+-------------
+iClassify is still pretty early in it's life, so installation is not exactly
+a piece of cake.  You need a few prerequisites:
+
+1. uuidtools. (http://sporkmonger.com/projects/uuidtools/)
+   You can install this with "gem install uuidtools"
+   
+2. Rails.
+   You can install this with "gem install rails"
+   
+3. SQLite 3 (http://www.sqlite.org)
+   Assuming you already have the libraries, a "gem install sqlite3-ruby" 
+   will do the trick.
+
+4. Facter. (http://reductivelabs.com/projects/facter/)
+   iClassify uses Facter to populate lots of useful information about the
+   operating system.  You probably already have facter, since iClassify 
+   without Puppet at this not super useful.
+
+5. Builder. (http://builder.rubyforge.org)
+   Builder is for generating XML.  "gem install builder". 
+   
+6. Ferret and acts_as_ferret.
+   Ferret is a full text search engine.  You can install both with 
+   "gem install acts_as_ferret".
+
+--------------------------------------   
+Instructions for the iClassify Service
+--------------------------------------
+
+Checkout iClassify
+
+  $ git clone git://hjksolutions.com/iclassify iclassify
+
+Move the new directory to the location you want to serve it from.
+
+  $ sudo mv iclassify /srv/iclassify
+  
+Create the log directory.
+ 
+  $ sudo mkdir /srv/iclassify/log
+
+Change to that directory, and create the database.
+
+  $ RAILS_ENV=production rake db:migrate
+  
+Start iClassify.
+
+  $ ./script/server -e production
+  
+You can now hit port 3000 on your host to see the iClassify interface.
+Getting things running under a proper rails style deployment will eventually
+show up as a puppet recipe, but for now, it's left as an exercise to the
+user.
+
+------------------------
+Instructions for icagent
+------------------------
+
+The icagent provides for a simple mechanism to have systems register 
+themselves with iClassify.  You should install it on your systems, by
+doing:
+
+  $ mkdir /srv/icagent
+  $ cd /srv/iclassify
+  $ cp -ra ./lib /srv/icagent
+  $ cp -ra ./icagent /srv/icagent
+  $ cp -ra ./bin /srv/icagent
+  
+And then distributing the resulting set to your hosts, setting up a cronjob,
+and calling it a day.  You call icagent by:
+
+  $ icagent -s http://yourserver:3000 -d /srv/icagent/icagent
+  
+This will register your host as unclassified, with all the attributes from
+Facter present.
+
+------------------
+Puppet Integration
+------------------
+
+Assuming you are running iClassify on the same system as your puppet master,
+you can use iClassify as your external node tool.  Tags in iClassify equate
+to classes in Puppet.   To do so, you should set:
+
+[main]
+  external_nodes = "/srv/iclassify/bin/icpuppet"
+  
+Puppet has a bug currently that prevents setting command line arguments on
+the external_nodes call.  This should be fixed soon, but until then, you
+need to either crack open icpuppet and hard code the server path or just
+run it on the same host.
+
+-------------------
+Command line search
+-------------------
+
+It's neat to be able to search from the command line.  Poke around at the
+icsearch command, and you can easily start building shell scripts to do
+good things.
