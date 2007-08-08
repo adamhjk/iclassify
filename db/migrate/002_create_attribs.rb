@@ -5,7 +5,7 @@ class CreateAttribs < ActiveRecord::Migration
       t.column :name, :string, :null => false
     end
     
-    execute 'ALTER TABLE attribs ADD CONSTRAINT fk_attrib_node_id FOREIGN KEY (node_id) REFERENCES nodes(id)'
+    #execute 'ALTER TABLE attribs ADD CONSTRAINT fk_attrib_node_id FOREIGN KEY (node_id) REFERENCES nodes(id)'
   end
 
   def self.down

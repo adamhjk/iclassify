@@ -5,21 +5,17 @@
 ActiveRecord::Schema.define(:version => 5) do
 
   create_table "attribs", :force => true do |t|
-    t.column "node_id", :integer,                 :null => false
-    t.column "name",    :string,  :default => "", :null => false
+    t.column "node_id", :integer, :null => false
+    t.column "name",    :string,  :null => false
   end
-
-  add_index "attribs", ["node_id"], :name => "fk_attrib_node_id"
 
   create_table "avalues", :force => true do |t|
-    t.column "attrib_id", :integer,                 :null => false
-    t.column "value",     :text,    :default => "", :null => false
+    t.column "attrib_id", :integer, :null => false
+    t.column "value",     :text,    :null => false
   end
 
-  add_index "avalues", ["attrib_id"], :name => "fk_avalues_attrib_id"
-
   create_table "nodes", :force => true do |t|
-    t.column "uuid",        :string, :limit => 38, :default => "", :null => false
+    t.column "uuid",        :string, :limit => 38, :null => false
     t.column "description", :string
     t.column "notes",       :text
   end
@@ -29,11 +25,11 @@ ActiveRecord::Schema.define(:version => 5) do
     t.column "tag_id",  :integer, :null => false
   end
 
-  add_index "nodes_tags", ["node_id"], :name => "index_nodes_tags_on_node_id"
   add_index "nodes_tags", ["tag_id"], :name => "index_nodes_tags_on_tag_id"
+  add_index "nodes_tags", ["node_id"], :name => "index_nodes_tags_on_node_id"
 
   create_table "tags", :force => true do |t|
-    t.column "name", :string, :default => "", :null => false
+    t.column "name", :string, :null => false
   end
 
 end
