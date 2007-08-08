@@ -10,10 +10,33 @@ class Node < ActiveRecord::Base
                       :with    => UUID_REGEX,
                       :message => "Must be a valid UUID"
                       
-  acts_as_ferret :fields => [ :uuid, :notes, :description, :tag, :attrib ]
+  acts_as_ferret :fields => [ :uuid, :notes, :description, :tag ]
   # FIXME: Acts as tree needs to be added, along with consolidating tags and
   #        attribs.
   # acts_as_tree   :order => :uuid 
+  
+  # turn this instance into a ferret document (which basically is a hash of
+  # fieldname => value pairs)
+  def to_doc
+    logger.debug "creating doc for class: #{self.class.name}, id: #{self.id}"
+    returning doc = Ferret::Document.new do
+      # store the id of each item
+      doc[:id] = self.id
+
+      # store the class name if configured to do so
+      doc[:class_name] = self.class.name if aaf_configuration[:store_class_name]
+    
+      # iterate through the fields and add them to the document
+      aaf_configuration[:ferret_fields].each_pair do |field, config|
+        doc[field] = self.send("#{field}_to_ferret") unless config[:ignore]
+      end
+      
+      # Add attribute fields
+      attribs.each do |attrib|
+        doc[attrib.name] = attrib.avalues.collect {|av| av.value}
+      end
+    end
+  end
   
   def tag
     tags.collect { |t| t.name }
