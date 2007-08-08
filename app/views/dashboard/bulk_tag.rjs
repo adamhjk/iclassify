@@ -1,0 +1,11 @@
+if @nodes.length > 0 
+  page.replace_html(
+    "bulk_tag", 
+    :partial => @partial_to_render, 
+    :locals => { :nodes => @nodes, :tags => @tags }
+  )
+  page[:bulk_tags_notice].visual_effect(:highlight, :startcolor => "#88ff88", :endcolor => "#FFFFFF")
+else
+  page.replace_html("bulk_tag", 'No Matching Nodes')
+  page[:bulk_tag].visual_effect(:highlight, :startcolor => "#88ff88", :endcolor => "#FFFFFF")
+end

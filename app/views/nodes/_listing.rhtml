@@ -1,0 +1,9 @@
+<table>
+    <% nodes.each do |node| -%>
+    <tr>
+    
+        <td><%= link_to("#{h node.description} (#{h node.uuid})", node_path(node)) %></td>
+        <td>[<%= link_to 'Edit', edit_node_path(node) %>, <%= link_to 'Delete', node_path(node), :confirm => 'Are you sure?', :method => :delete %>] </td>
+        </tr>
+    <% end -%>
+</table>

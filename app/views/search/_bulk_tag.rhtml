@@ -1,0 +1,13 @@
+<div id="bulk_tag">
+<% if nodes.length > 0 -%>
+<h1>Search Results</h1>
+<p id="bulk_tags_notice" style="color: green"><%= flash[:bulk_tags_notice] %></p>
+<form action="<%= url_for(:controller => 'dashboard', :action => 'bulk_tag') %>" method="post" 
+    onsubmit="new Ajax.Request('<%= url_for(:controller => 'dashboard', :action => 'bulk_tag') %>', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this), onCreate: $('tag_widget_spinner').setStyle({display: 'inline'}), onComplete: $('tag_widget_spinner').setStyle({display: 'none'})}); return false;">
+        <%= hidden_field_tag :search_query, params[:search_query] ? params[:search_query] : params[:q] %>
+<%= render :partial => "search/listing", :locals => { :nodes => nodes, :tags => tags }%>
+</form>
+<% else -%>
+<h1>No Results</h1>
+<% end -%>
+</div>
