@@ -57,6 +57,12 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
   
+  map.connect ':all',
+    :controller => 'options', 
+    :action => 'options', 
+    :conditions => { :method => :options },
+    :requirements => { :all => /.*/ }
+    
   map.connect '', 
     :controller => "dashboard",
     :action => "index",
