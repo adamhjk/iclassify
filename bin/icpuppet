@@ -25,7 +25,7 @@ require File.dirname(__FILE__) + '/../lib/iclassify/client'
 require 'optparse'
 
 config = {
-  :server    => 'http://localhost:3000'
+  :server    => 'http://iclassify'
 }
 args = ARGV
 opts = OptionParser.new do |opts|

@@ -26,7 +26,7 @@ require 'optparse'
 
 config = {
   :uuidfile  => File.dirname(__FILE__) + '/../icagent.uuid',
-  :server    => 'http://localhost:3000'
+  :server    => 'http://iclassify'
 }
 opts = OptionParser.new do |opts|
   opts.banner = "Usage: #{$0} [-d DIR|-r FILE] (options)"
