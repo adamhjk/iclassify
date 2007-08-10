@@ -21,12 +21,12 @@ module IClassify
         xml.description(@description)
         xml.notes(@notes)
         xml.tags do
-          @tags.each do |tag|
+          @tags.sort.each do |tag|
             xml.tag(tag)
           end
         end
         xml.attribs do
-          @attribs.each do |attrib|
+          @attribs.sort{ |a,b| a[:name] <=> b[:name] }.each do |attrib|
             xml.attrib do
               xml.name(attrib[:name])
               xml.values do
@@ -47,9 +47,9 @@ module IClassify
       output << "node_id: #{@node_id}\n"
       output << "notes: #{@notes}\n"
       output << "description: #{@description}\n"
-      output << "tags: #{@tags.join(' ')}\n"
+      output << "tags: #{@tags.sort.join(' ')}\n"
       output << "attribs:\n"
-      @attribs.each do |attrib|
+      @attribs.sort{ |a,b| a[:name] <=> b[:name] }.each do |attrib|
         output << "  #{attrib[:name]}: #{attrib[:values].join(', ')}\n"
       end
       output

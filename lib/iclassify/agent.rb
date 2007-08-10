@@ -100,11 +100,11 @@ module IClassify
       @node.tags << tag
     end
     
-    # Add an attribute to this node. Requires a name and an array of
-    # values. 
+    # Add an attribute to this node. Requires a name and either a string or
+    # array of values.
     def add_attrib(name, values)
       load unless @node
-      @node.attribs << { :name => name, :values => values }
+      @node.attribs << { :name => name, :values => values.kind_of?(Array) ? values : [ values ] }
     end
     
     # Run an iclassify script.
