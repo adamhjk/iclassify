@@ -25,7 +25,7 @@ require File.dirname(__FILE__) + '/../lib/iclassify/client'
 require 'optparse'
 
 config = {
-  :server    => 'http://iclassify'
+  :server => 'http://iclassify'
 }
 opts = OptionParser.new do |opts|
   opts.banner = "Usage: #{$0} (options) query"
