@@ -1,0 +1,95 @@
+#!/usr/bin/env ruby -w
+#
+#  iClassify - A node classification service. 
+#  Copyright (C) 2007 HJK Solutions and Adam Jacob (<adam@hjksolutions.com>)
+# 
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License along
+#  with this program; if not, write to the Free Software Foundation, Inc.,
+#  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+#  Runs puppetd on a client if the tags have changed in iClassify
+#
+
+require 'rubygems'
+require File.dirname(__FILE__) + '/../lib/iclassify/agent'
+require 'optparse'
+require 'tempfile'
+require 'open3'
+
+config = {
+  :server    => 'http://iclassify',
+  :uuidfile  => File.dirname(__FILE__) + '/../icagent.uuid',
+  :tmpfile   => File.join(Dir::tmpdir, "icwatcher.digest"),
+}
+verbose = false
+
+args = ARGV
+opts = OptionParser.new do |opts|
+  opts.banner = "Usage: #{$0} [-s server] -c command"
+  opts.on("-s SERVER", "--server", "iClassify Server URL") do |s|
+    config[:server] = s
+  end
+  opts.on("-u UUIDFILE", "--uuidfile UUIDFILE", "Path to the uuid file") do |u|
+    config[:uuidfile] = u
+  end
+  opts.on("-c COMMAND", "--command", "Command to run on changes") do |c|
+    config[:command] = c
+  end
+  opts.on("-t TMPFILE", "--tmpfile", "Where to store the digest between runs") do |t|
+    config[:tmpfile] = t
+  end
+  opts.on("-v", "--verbose", "Print the output of command") do
+    verbose = true
+  end
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+end
+opts.parse!(args)
+
+unless config.has_key?(:command)
+  puts "You must supply a command!"
+  puts opts.help
+  exit 1
+end
+
+hostname = args[0]
+
+agent = IClassify::Agent.new(config[:uuidfile], config[:server])
+agent.load
+digest = agent.node.digest
+
+if FileTest.file?(config[:tmpfile])
+  last_digest = File.readlines(config[:tmpfile])
+  last_digest[0].chomp!
+  if digest == last_digest[0]
+    puts "Node has not changed." if verbose
+    exit 0
+  end
+end
+
+output = `#{config[:command]} 2>&1`
+raise "#{config[:command]} failed: #{output}" unless $?.success?
+
+if verbose 
+  puts "Command: #{config[:command]}"
+  puts "---- OUTPUT ----"
+  puts output
+end
+
+File.open(config[:tmpfile], "w") do |tmp|
+  tmp.puts digest
+end
+
+exit 0

@@ -2,6 +2,7 @@ require 'rubygems'
 require 'rexml/document'
 require 'builder'
 require 'yaml'
+require 'digest/sha1'
 
 module IClassify
   class Node
@@ -39,6 +40,10 @@ module IClassify
         end
       end
       output
+    end
+    
+    def digest
+       Digest::SHA1.hexdigest(to_s())
     end
     
     def to_s(tags=nil,attribs=nil)
