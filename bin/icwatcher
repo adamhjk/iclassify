@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby -w
+#!/usr/bin/env ruby
 #
 #  iClassify - A node classification service. 
 #  Copyright (C) 2007 HJK Solutions and Adam Jacob (<adam@hjksolutions.com>)
