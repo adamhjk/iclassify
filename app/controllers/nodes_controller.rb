@@ -110,7 +110,7 @@ class NodesController < ApplicationController
   
   def show_uuid
     @node = Node.find_by_uuid(params[:uuid])
-    params[:id] = @node.id
+    raise "Cannot find node" unless @node
     respond_to do |format|
       format.html { redirect_to node_url(@node) }
       format.xml  { show }
@@ -119,6 +119,7 @@ class NodesController < ApplicationController
   
   def update_uuid
     @node = Node.find_by_uuid(params[:uuid])
+    raise "Cannot find node" unless @node
     params[:id] = @node.id
     respond_to do |format|
       format.xml { update }
