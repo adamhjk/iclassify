@@ -11,6 +11,7 @@ module IClassify
   
     def initialize(service_url)
       @url = URI.parse(service_url)
+      Net::HTTP.read_timeout = 60
     end
   
     def make_url(method, params)

@@ -25,8 +25,10 @@ a piece of cake.  You need a few prerequisites:
    Builder is for generating XML.  "gem install builder". 
    
 6. Ferret and acts_as_ferret.
-   Ferret is a full text search engine.  You can install both with 
-   "gem install acts_as_ferret".
+   Ferret is a full text search engine.  Install the latest ferret from
+   gems, and then install the acts_as_ferret from trunk with:
+   
+   script/plugin install svn://projects.jkraemer.net/acts_as_ferret/trunk/plugin/acts_as_ferret
 
 --------------------------------------   
 Instructions for the iClassify Service
