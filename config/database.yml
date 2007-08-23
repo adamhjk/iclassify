@@ -32,4 +32,5 @@ test:
 production:
   adapter: sqlite3
   database: db/iclassify_production
+  timeout: 360
 
