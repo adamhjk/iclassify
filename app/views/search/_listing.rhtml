@@ -6,7 +6,7 @@
     <% nodes.each do |node| -%>
     <tr>
         <td>
-        <%= check_box_tag(:tag_nodes, node.id, false, :class => "tag_node") %> 
+        <%= check_box_tag("tag_nodes[#{node.id}]", node.id, false, :class => "tag_node") %> 
         </td>
         <td>
         <%= link_to("#{h node.description} (#{h node.uuid})", node_path(node)) %> 

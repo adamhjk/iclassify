@@ -34,7 +34,7 @@ class DashboardController < ApplicationController
   
   def bulk_tag
     if params[:tag_nodes] && params[:tag_list]
-      tag_nodes = params[:tag_nodes].kind_of?(Array) ? params[:tag_nodes] : [ params[:tag_nodes] ]
+      tag_nodes = params[:tag_nodes]
       tags = Tag.create_missing_tags(params[:tag_list].split(" "))
       Node.bulk_tag(tag_nodes, tags)
       flash[:bulk_tags_notice] = "Nodes have been updated."

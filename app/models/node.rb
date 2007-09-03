@@ -71,8 +71,8 @@ class Node < ActiveRecord::Base
     resultset
   end
   
-  def self.bulk_tag(node_ids, tags)
-    node_ids.each do |node_id|
+  def self.bulk_tag(node_hash, tags)
+    node_hash.each do |node_id, value|
       node = find(node_id.to_i)
       node.tags = tags
       node.save
