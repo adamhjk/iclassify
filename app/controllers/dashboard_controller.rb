@@ -41,7 +41,7 @@ class DashboardController < ApplicationController
       redirect_to(url_for(:controller => "dashboard", :action => "index")) unless request.xhr?
       @tags = Tag.find(:all)
       @tags ||= Array.new
-      @nodes = Node.find_by_contents(params[:search_query])
+      @nodes = Node.find_by_contents(params[:search_query], { :limit => :all }, { :order => ['description']})
       if params[:search_query] == "tag:unclassified"
         @partial_to_render = "dashboard/unclassified_nodes"
       else
@@ -52,7 +52,7 @@ class DashboardController < ApplicationController
       redirect_to(url_for(:controller => "dashboard", :action => "index")) unless request.xhr?
       @tags = Tag.find(:all)
       @tags ||= Array.new
-      @nodes = Node.find_by_contents(params[:search_query])
+      @nodes = Node.find_by_contents(params[:search_query], { :limit => :all }, { :order => ['description']})
       if params[:search_query] == "tag:unclassified"
         @partial_to_render = "dashboard/unclassified_nodes"
       else
