@@ -1,5 +1,8 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+
+latte:
   id: 1
-two:
-  id: 2
+  uuid: EB1F9086-4314-431B-A834-B68396BBF4B1
+  description: "latte"
+  notes: "Coffee is loved around the world"
+
