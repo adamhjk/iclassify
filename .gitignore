@@ -1,6 +1,8 @@
 tmp/*
 log/*
+test/iclassify_test.db
 db/iclassify_*
 db/schema.rb
 icagent.uuid
 index/*
+vendor/*
