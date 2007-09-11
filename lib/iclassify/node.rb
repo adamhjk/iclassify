@@ -46,6 +46,26 @@ module IClassify
        Digest::SHA1.hexdigest(to_s())
     end
     
+    #
+    # Returns the tag name if this node has that tag.
+    #
+    def tag?(tag)
+      @tags.detect { |t| t == tag }
+    end
+    
+    # Returns the values for this attribute, if it exists for this node.  If
+    # there is only one, it will return it, if it's an array, you get the 
+    # array. You have to check!
+    def attrib?(attrib)
+      na = @attribs.detect { |a| a[:name] == attrib }
+      return nil unless na
+      if na[:values].length > 1
+        return na[:values]
+      else
+        return na[:values][0]
+      end
+    end
+    
     def to_s(tags=nil,attribs=nil)
       output = String.new
       output << "uuid: #{@uuid}\n"

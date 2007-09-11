@@ -63,20 +63,14 @@ module IClassify
     # Returns the tag name if this node has that tag.
     #
     def tag?(tag)
-      @node.tags.detect { |t| t == tag }
+      @node.tag?(tag)
     end
     
     # Returns the values for this attribute, if it exists for this node.  If
     # there is only one, it will return it, if it's an array, you get the 
     # array. You have to check!
     def attrib?(attrib)
-      na = @node.attribs.detect { |a| a[:name] == attrib }
-      return nil unless na
-      if na[:values].length > 1
-        return na[:values]
-      else
-        return na[:values][0]
-      end
+      @node.attrib?(attrib)
     end
     
     # Returns the current node as a string.
