@@ -50,8 +50,13 @@ end
 hostname = args[0]
 
 client = IClassify::Client.new(config[:server])
-# TODO: Refactor the search string when we get ferret doing the right with attribs.
-results = client.search("hostname:\"#{hostname}\" OR fqdn:\"#{hostname}\"")
+begin
+  results = client.search("hostname:\"#{hostname}\" OR fqdn:\"#{hostname}\"")
+rescue SocketError
+  $stderr.puts("Error: Could not connect to server.")
+  exit 1
+end
+
 if results.length > 1
   STDERR.puts "Hostname #{hostname} has more than one node definition!"
   exit 10

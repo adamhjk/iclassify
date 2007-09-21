@@ -59,7 +59,13 @@ unless config.has_key?(:recipe) || config.has_key?(:directory)
 end
 
 agent = IClassify::Agent.new(config[:uuidfile], config[:server])
-agent.load
+begin
+  agent.load
+rescue SocketError
+  $stderr.puts("Error: Cannot connect to server.")
+  exit 1
+end
+
 if config.has_key?(:recipe)
   agent.run_script(File.expand_path(config[:recipe]))
 end

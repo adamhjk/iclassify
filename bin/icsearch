@@ -55,7 +55,13 @@ end
 query = args[0]
 
 client = IClassify::Client.new(config[:server])
-results = client.search(query)
+begin
+  results = client.search(query)
+rescue SocketError
+  $stderr.puts("Error: Could not connect to server.")
+  exit 1
+end
+
 if config.has_key?(:attribs)
   header = "# uuid,#{config[:attribs].join(',')}"
   header << ",tags" if config.has_key?(:tags)
