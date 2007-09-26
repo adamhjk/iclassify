@@ -134,6 +134,15 @@ class NodesController < ApplicationController
     end
   end
   
+  def autocomplete
+    @nodes = Node.find(:all, :conditions => [ "description LIKE ? ", '%' + params[:q] + '%' ])
+    returnv = ""
+    @nodes.each do |n|
+      returnv << "#{n.description}\n"
+    end
+    render :text => returnv
+  end
+  
   private
     
     def populate_tags_and_attribs(params=nil)

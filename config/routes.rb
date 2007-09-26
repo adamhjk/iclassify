@@ -1,5 +1,10 @@
 ActionController::Routing::Routes.draw do |map|
 
+  map.connect "nodes/autocomplete",
+    :controller => "nodes",
+    :action => "autocomplete",
+    :conditions => { :method => :get }
+
   map.connect "nodes/:uuid.:format",
     :controller => "nodes",
     :action => "show_uuid",
@@ -50,6 +55,61 @@ ActionController::Routing::Routes.draw do |map|
     :action => "all_index",
     :conditions => { :method => :get }
     
+  map.connect "tags", 
+    :controller => "tags", 
+    :action => "all_create", 
+    :conditions => { :method => :post }
+    
+  map.connect "tags/new", 
+    :controller => "tags", 
+    :action => "all_new", 
+    :conditions => { :method => :get }
+
+  map.connect "tags.:format", 
+    :controller => "tags", 
+    :action => "all_create",
+    :conditions => { :method => :post }
+    
+  map.connect "tags/:id", 
+    :controller => "tags", 
+    :action => "all_destroy", 
+    :conditions => { :method => :delete }
+
+  map.connect "tags/:id.:format", 
+    :controller => "tags", 
+    :action => "all_destroy",
+    :conditions => { :method => :delete }
+    
+  map.connect "tags/:id;edit", 
+    :controller => "tags", 
+    :action => "all_edit",
+    :conditions => { :method => :get }
+    
+  map.connect "tags/:id", 
+    :controller => "tags", 
+    :action => "all_show",
+    :conditions => { :method => :get }
+  
+  map.connect "tags/:id.format",
+    :controller => "tags", 
+    :action => "all_show",
+    :conditions => { :method => :get }
+    
+  map.connect "tags/:id",
+    :controller => "tags",
+    :action => "all_update",
+    :conditions => { :method => :post }
+    
+  map.connect "tags/:id/nodes/:node_id",
+    :controller => "tags",
+    :action => "all_node_destroy",
+    :conditions => { :method => :delete }
+    
+  map.connect "tags/:id/nodes",
+    :controller => "tags",
+    :action => "all_node_add",
+    :conditions => { :method => :post }
+  
   map.resources :nodes do |nodes|
     nodes.resources :tags
     nodes.resources :attribs do |attribs|

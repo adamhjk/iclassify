@@ -2,8 +2,11 @@
     <% nodes.each do |node| -%>
     <tr>
     
-        <td><%= link_to("#{h node.description} (#{h node.uuid})", node_path(node)) %></td>
-        <td>[<%= link_to 'Edit', edit_node_path(node) %>, <%= link_to 'Delete', node_path(node), :confirm => 'Are you sure?', :method => :delete %>] </td>
+        <td>
+        <%= link_to("#{h node.description} (#{h node.uuid})", node_path(node)) %></td>
+        <td>
+            <%= edit_button("Edit", edit_node_path(node))%>
+            <%= remove_button("Delete", node_path(node), "Delete node #{h node.description}?")%>            
         </tr>
     <% end -%>
 </table>

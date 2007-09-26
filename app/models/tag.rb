@@ -18,6 +18,10 @@
 class Tag < ActiveRecord::Base
   has_and_belongs_to_many :nodes
   validates_presence_of :name
+  validates_uniqueness_of :name
+  validates_format_of :name, 
+    :with => /\A(\w|\-)+\Z/, 
+    :message => "Name must be alphanumeric plus _ and -."
   
   after_create  :update_ferret
   after_update  :update_ferret
@@ -27,6 +31,16 @@ class Tag < ActiveRecord::Base
     nodes.each do |node|
       node.ferret_update
     end
+  end
+  
+  def self.find_with_node_count(*args)
+    tag_list = find(*args)
+    nc_ary = self.connection.select_all("SELECT tag_id, count(*) AS count FROM nodes_tags GROUP BY tag_id")
+    node_count = Hash.new
+    nc_ary.each do |nc|
+      node_count[nc["tag_id"].to_i] = nc["count"].to_i
+    end
+    tag_list.sort { |a,b| a.name <=> b.name }.collect { |t| { :tag => t, :count => node_count.has_key?(t.id) ? node_count[t.id] : 0 } }
   end
   
   def self.create_missing_tags(missing_tags)

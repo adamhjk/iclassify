@@ -1,0 +1,52 @@
+<div id="tag_list_<%= tag.id %>">
+<div id="tag_header_<%= tag.id %>">
+    <%= h tag.name %>
+<a id="show_tags_for_<%= tag.id %>" href="<%= url_for(:controller => "tags", :action => "all_edit", :id => tag.id) %>" class="toggle" toggle="tag_node_list_<%= tag.id %>" >(<%= node_count %> nodes)</a>
+    <%= edit_button("Edit", url_for(:controller => "tags", :action => "all_edit", :id => tag.id))%>
+    <%= remove_button_remote("delete_tag_#{tag.id}", "Delete", 
+     url_for(:controller => "tags", :action => "all_destroy", :id => tag.id),
+     update_div_id,
+     "Really delete tag #{h tag.name}?"
+    ) %>
+</div>
+<% div_style = visible ? "" : "display: none;" -%>
+<div id="tag_node_list_<%= tag.id %>" class="tag_node_list" style="<%= div_style %>">
+    
+<% form_tag(url_for(:controller => "tags", :action => "all_node_add", :id => tag.id), 
+                     :id => "tag_#{tag.id}_add_node", :class => "remote_form", :update => "tag_list_#{tag.id}") do -%>
+<%= text_field_tag("new_node", nil, { :id => "tag_new_node_#{tag.id}", :size => 10, :class => "autocomplete", :autocomplete_url => "#{url_for(:controller => "nodes", :action => "autocomplete")}" }) %>
+<%= image_submit_tag(image_path("list-add.png")) %>
+<%= spinner_tag("tag_#{tag.id}_add_node_spinner") %>
+<% end -%>
+<% tagged_nodes.each do |node| -%>
+<table>
+    <tr>
+        <td><%= link_to("#{h node.description}", node_path(node)) %></td>
+        <td><%= remove_button_remote("tag_list_#{tag.id}_node_#{node.id}", "Delete Tag from Node", 
+                    url_for(:controller => "tags", :action => "all_node_destroy", :id => tag.id, :node_id => node.id),
+                    "tag_list_#{tag.id}",
+                    "Really remove tag #{h tag.name} from #{h node.description}"
+        ) %>
+        </td>
+    </tr>
+</table>
+<% end -%>
+</div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+/*
+  $('#show_tags_for_<%= tag.id %>').click(function() { 
+        $('#tag_node_list_<%= tag.id %>').slideToggle("fast"); 
+        return false; 
+    });
+  $("#tag_<%= tag.id %>_add_node").ajaxForm({
+    dataType: 'html',
+    beforeSend: function(xhr) {xhr.setRequestHeader("Accept", "text/html");},
+    success: function(data) {
+        $('#tag_list_<%= tag.id %>').html(data);
+    }
+  });
+  $("#tag_new_node_<%= tag.id %>").autocomplete('<%= url_for(:controller => "nodes", :action => "autocomplete") %>');
+  */
+</script>

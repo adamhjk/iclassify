@@ -24,6 +24,22 @@ class TagsController < ApplicationController
     @tag = Tag.new
   end
   
+  # GET /tags/new
+  def all_new
+    @tag = Tag.new
+    if request.xhr? 
+      render(:partial => "tag_form", 
+        :locals => 
+          { 
+            :submit => "Create New Tag",
+            :remote => true,
+            :update => "tag_list_box",
+            :url => url_for(:controller => "tags", :action => "all_create")
+          }
+      )
+    end
+  end
+  
   # GET /nodes/:node_id/tags
   def index
     @tags = @node.tags
@@ -32,11 +48,27 @@ class TagsController < ApplicationController
   # GET /tags/
   def all_index
     @tags = Tag.find(:all, :order => :name)
+    respond_to do |format|
+       format.html 
+       format.xml { render :layout => false, :template => 'tags/all_index.rxml' }
+     end
+  end
+  
+  # GET /tags/:id
+  def all_show
+    @tag = Tag.find(params[:id])
+    @tagged_nodes = get_tagged_nodes
   end
   
   # GET /nodes/:node_id/tags/1;edit
   def edit
     @tag = @node.tags.find(params[:id])
+  end
+  
+  # GET /tags/:tag_id;edit
+  def all_edit
+    @tag = Tag.find(params[:id])
+    @tagged_nodes = get_tagged_nodes
   end
 
   # POST /nodes/:node_id/tags
@@ -56,7 +88,29 @@ class TagsController < ApplicationController
       render :action => :new
     end
   end
-
+  
+  # POST /tags/:tag_id
+  # POST /tags/:tag_id.xml
+  def all_create
+    @tag = Tag.create(params[:tag])
+    if @tag.save
+      if request.xhr?
+        render(:partial => "/tags/tag_listing")
+      else 
+        redirect_to url_for(:controller => "tags", :action => "all_show", :id => @tag.id)
+      end
+    else
+      if request.xhr?
+        flash[:error] = "Failed to create new tag!"
+        render(:partial => "/tags/tag_listing")
+        #@tagged_nodes = get_tagged_nodes
+        #render :action => :all_edit
+      else
+        render(:action => :all_new)
+      end
+    end
+  end
+  
   # PUT /nodes/:node_id/tags/1
   # PUT /nodes/:node_id/tags/1.xml
   def update
@@ -67,12 +121,72 @@ class TagsController < ApplicationController
       render :action => :edit
     end
   end
+  
+  # PUT /tags/:tag_id
+  # PUT /tags/:tag_id.xml
+  def all_update
+    @tag = Tag.find(params[:id])
+    @tagged_nodes = get_tagged_nodes()
+    if @tag.update_attributes(params[:tag])
+      redirect_to url_for(:controller => "tags", :action => "all_show", :id => @tag.id)
+    else
+      render :action => :all_edit
+    end
+  end
 
   # DELETE /nodes/:node_id/tags/1
   # DELETE /nodes/:node_id/tags/1.xml
   def destroy
     @node.tags.delete(@node.tags.find(params[:id]))
     redirect_to node_url(@node)
+  end
+  
+  # DELETE /tags/:tag_id
+  # DELETE /tags/:tag_id.xml
+  def all_destroy
+    Tag.find(params[:id]).destroy
+    if request.xhr? 
+      render(:partial => "/tags/tag_listing")
+    else
+      redirect_to url_for(:controller => "tags", :action => "all_index")
+    end
+  end
+  
+  # DELETE /tags/:id/nodes/:node_id
+  def all_node_destroy
+    @tag = Tag.find(params[:id])
+    @tag.nodes.delete(Node.find(params[:node_id]))
+    if request.xhr?
+      render(:partial => "/tags/tagged_nodes", 
+        :locals => { 
+          :tagged_nodes => @tag.nodes.sort { |a,b| a.description <=> b.description }, 
+          :tag => @tag,
+          :node_count => @tag.nodes.count,
+          :visible => true 
+        }
+      )
+    else
+      redirect_to url_for(:action => "all_index")
+    end
+  end
+  
+  # POST /tags/:id/nodes
+  def all_node_add
+    @tag = Tag.find(params[:id])
+    unless @tag.nodes.detect { |n| n.description == params[:new_node] }
+      node = Node.find(:all, :conditions => [ "description = ?", params[:new_node] ])
+      @tag.nodes << node
+    end
+    if request.xhr?
+      render(:partial => "/tags/tagged_nodes", 
+        :locals => { 
+          :tagged_nodes => @tag.nodes.sort { |a,b| a.description <=> b.description }, 
+          :tag => @tag,
+          :node_count => @tag.nodes.count,
+          :visible => true 
+        }
+      )
+    end
   end
   
   private
@@ -83,5 +197,9 @@ class TagsController < ApplicationController
         redirect_to nodes_url unless @node_id
         @node = Node.find(@node_id)
       end
+    end
+    
+    def get_tagged_nodes
+      @tag.nodes.sort { |a,b| a.description <=> b.description }
     end
 end

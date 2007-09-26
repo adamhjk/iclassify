@@ -1,0 +1,7 @@
+mastodon:
+  id: 1
+  name: mastodon
+  
+web_server:
+  id: 2
+  name: web_server

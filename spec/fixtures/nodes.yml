@@ -1,0 +1,14 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+latte:
+  id: 1
+  uuid: EB1F9086-4314-431B-A834-B68396BBF4B1
+  description: "latte"
+  notes: "Coffee is loved around the world"
+
+dosequis:
+  id: 2
+  uuid: C748F059-EBE8-444A-A346-7F881DD9D1B6
+  description: "dosequis"
+  notes: "Beer is also loved around the world"
+

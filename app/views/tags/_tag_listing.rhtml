@@ -1,0 +1,17 @@
+<div id="tag_list_box">
+<%= error_messages_for :tag %>
+<% if tag_count.length > 0 -%>
+<%= spinner_tag("tag_list_box_spinner") %>
+<% tag_count.each do |tag| -%>
+<%= render :partial => "/tags/tagged_nodes", :locals => { 
+    :tagged_nodes => tag[:tag].nodes.sort { |a,b| a.description <=> b.description }, 
+    :tag => tag[:tag],
+    :node_count => tag[:count],
+    :visible => false,
+    :update_div_id => "tag_list_box"
+    } %>
+<% end -%>
+<% else -%>
+No Tags
+<% end -%>
+</div>

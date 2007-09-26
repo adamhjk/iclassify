@@ -1,0 +1,81 @@
+<HTML>
+<link rel='stylesheet' href='/doc/zoomadsl.css'>
+<script type="text/javascript" src="/shared/lastPage.js"></script>
+<script language='javascript'>
+
+<!-- WanType: 0 = none, 1 = ADSL, 2 = ethernet -->
+var WanType = "1"
+
+var E2SupportLevel = "0"
+
+if( E2SupportLevel != 0 )
+	document.write("<TITLE>Zoom - USB Endpoint</TITLE>\n");
+else if (WanType == 1)
+	document.write("<TITLE>Zoom DSL Modem Web-Console</TITLE>\n");
+else
+	document.write("<TITLE>Zoom DSL Modem Web-Console</TITLE>\n");
+
+
+document.write('<FRAMESET ROWS="92,*" BORDER=0>\n');
+document.write('<FRAME SRC="/doc/toc.html" NAME="qanner" MARGINWIDTH=0 MARGINHEIGHT=0 BORDER=0 scrolling=NO>\n');
+document.write('<FRAMESET COLS="170,*" BORDER=0>\n');
+document.write('<FRAME SRC="/doc/nonehelp.html" NAME="menu" MARGINWIDTH=0 MARGINHEIGHT=0 BORDER=0 scrolling=NO>\n');
+
+
+var st_ppp_connection_name = new Array(32);
+var st_ppp_connection_if = new Array(32);
+var st_ppp_connection_encap = new Array(32);
+var st_ppp_connection_svc_name = new Array(32);
+var st_ppp_connection_acct = new Array(32);
+var st_ppp_connection_authentication = new Array(32);
+var st_ppp_connection_auto_reconnect = new Array(32);
+var st_ppp_connection_disconnect_timer = new Array(32);
+var st_ppp_connection_mru = new Array(32);
+var st_ppp_connection_mtu = new Array(32);
+var st_ppp_connection_mss = new Array(32);
+var st_ppp_connection_lcp_echo_interval = new Array(32);
+var st_ppp_connection_lcp_echo_consec_fail_max = new Array(32);
+var st_ppp_connection_status = new Array(32);
+var st_ppp_connection_pkts_sent = new Array(32);
+var st_ppp_connection_pkts_rcvd = new Array(32);
+var st_ppp_connection_bytes_sent = new Array(32);
+var st_ppp_connection_bytes_rcvd = new Array(32);
+var st_ppp_connection_state = new Array(32);
+st_ppp_connection_pkts_sent[0] = "N/A";
+st_ppp_connection_pkts_rcvd[0] = "N/A";
+st_ppp_connection_bytes_sent[0] = "N/A";
+st_ppp_connection_bytes_rcvd[0] = "N/A";
+st_ppp_connection_state[0] = "1";
+st_ppp_connection_name[0] = "PPPoPvc 0";
+st_ppp_connection_if[0] = "Pvc 0";
+st_ppp_connection_encap[0] = "PPPoE";
+st_ppp_connection_svc_name[0] = "NONE";
+st_ppp_connection_acct[0] = "simple ppp account Pvc 0";
+st_ppp_connection_authentication[0] = "Auto";
+st_ppp_connection_auto_reconnect[0] = "Enabled";
+st_ppp_connection_disconnect_timer[0] = "0";
+st_ppp_connection_mru[0] = "1492";
+st_ppp_connection_mtu[0] = "1492";
+st_ppp_connection_mss[0] = "1432";
+st_ppp_connection_lcp_echo_interval[0] = "10";
+st_ppp_connection_lcp_echo_consec_fail_max[0] = "6";
+st_ppp_connection_status[0] = "Not Connected";
+var st_num_of_ppp_connections = "1"
+
+if( (E2SupportLevel == 1) && (st_num_of_ppp_connections == 1) )
+{
+  document.write("<FRAME SRC=\"/doc/pppqst.html\" NAME=main>\n");
+}
+else
+{
+  //This page Load after log on
+  //document.write("<FRAME SRC=\"/doc/wan_adv.html\" NAME=main>\n");
+	 document.write("<FRAME SRC=\"/doc/base_setup.html\" NAME=main>\n");
+  //document.write("<FRAME SRC=\"/user/wanindex.html\" NAME=main>\n");
+  // document.write("<FRAME SRC=\"/doc/home.html\" NAME=main>\n");
+}
+document.write("</FRAMESET>\n");
+</script>
+
+</HTML>
+

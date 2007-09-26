@@ -1,0 +1,26 @@
+<div class="section_box">
+    <div class="tag_show_header">
+        <h1>
+        Edit <%= h @tag.name %>
+        </h1> <%= @tag.nodes.count %> Nodes 
+        <%= remove_button("Delete Tag", 
+         url_for(:controller => "tags", :action => "all_destroy", :id => @tag.id),
+         "Really delete tag #{h @tag.name}?"
+        ) %>
+        <%= render :partial => "tag_form", :locals => {
+             :action => "all_update", 
+             :submit => "Submit",
+             :remote => false,
+             :url => url_for(:controller => "tags", :action => "all_update", :id => @tag.id)
+              }%>
+    </div>
+    <div class="tag_show_nodes">
+        <h2>Tagged Nodes</h2>
+        <%= render(:partial => "tagged_nodes", :locals => { 
+            :tagged_nodes => @tagged_nodes, 
+            :tag => @tag,
+            :node_count => @tagged_nodes.length,
+            :visible => true,
+            :update_div_id => "tag_show_nodes" })%>
+    </div>
+</div>

@@ -1,0 +1,6 @@
+<ul id="available_nodes_list">
+    <% @available_nodes.each do |node| %>
+        <li class="available_node" id='node_<%= node.id %>'><%= node.description %> (<%= node.uuid %>)</li>
+        <%= draggable_element("node_#{node.id}", :ghosting => true, :revert => true) %>
+    <% end %>
+</ul>

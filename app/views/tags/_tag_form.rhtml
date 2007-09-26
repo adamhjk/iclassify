@@ -1,0 +1,18 @@
+<%= error_messages_for :tag %> 
+<% form_tag(url, 
+     :id => "new_tag_form", 
+     :class => "remote_form", 
+     :update => update) do -%>    
+ <div class="fieldset">
+     <table>
+     <tr class="line-even">
+     <td><label for="node_name">Name:</label></td>
+     <td id="node_name_tr"><%= text_field_tag "tag[name]", @tag.name, :size => 20 %></td>
+     </tr>
+     </table>
+     <%= submit_tag submit %> <%= toggle_link(:id => "toggle_new_tag_form", :link_text => "Close", :url => "#", :toggle => "new_tag" )%>
+ </div>
+ <%= spinner_tag "new_tag_form_spinner" %>
+<% end -%>
+
+
