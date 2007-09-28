@@ -229,7 +229,7 @@ img.button {
   border: 1px solid gray;
 }
 
-div.tag_widget {
+div#tag_widget {
   width: 300px;
 }
 
