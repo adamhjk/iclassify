@@ -1,7 +1,0 @@
-== New and Noteworthy ==
-
-== 1.0.1 ==
-
-* Added remoteAttr, toggleClass, emtpy and remove to the list of registered core DOM manipulation methods
-* Removed setInterval in favor of on-demand setTimeout
-* Calling livequery with the same arguments (function references), restarts the existing Live Query instead of creating a new one

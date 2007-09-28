@@ -41,7 +41,13 @@ class AttribsController < ApplicationController
     
     if (@node.attribs << @attrib)
       flash[:attribute_notice] = "Added attribute #{@attrib.name}"
-      redirect_to(node_url(@node)) unless request.xhr?
+      if request.xhr?
+        render :partial => "/nodes/attrib_list", :locals => {
+                :node => @node
+          }
+      else
+        redirect_to(node_url(@node))
+      end
     else
       render :action => :new
     end
@@ -63,7 +69,11 @@ class AttribsController < ApplicationController
   def destroy
     @attrib = @node.attribs.find(params[:id]).destroy
     flash[:attribute_notice] = "Removed attribute #{@attrib.name}"
-    redirect_to node_url(@node) unless request.xhr?
+    if request.xhr?
+      render :partial => "/nodes/attrib_list", :locals => { :node => @node }
+    else
+      redirect_to node_url(@node) unless request.xhr?
+    end
   end
   
   private

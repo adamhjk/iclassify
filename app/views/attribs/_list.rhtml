@@ -3,8 +3,9 @@
     <tr>
         <td><%= h attrib.name %></td>
         <td><%= attrib.avalues.collect {|v| h v.value}.join("<br/>") %></td>
-        <td><%= link_to 'Add Value', new_avalue_path(:node_id => node, :attrib_id => attrib.id) %>
+        <td><%= link_to 'Add Value', new_avalue_path(:node_id => node, :attrib_id => attrib.id) %></td>
         <td><%= link_to 'Edit Value', edit_attrib_path(:node_id => node, :id => attrib.id) %></td>
-        <td><%= link_to 'Remove', attrib_path(:node_id => node, :id => attrib.id), :confirm => 'Are you sure?', :method => :delete %></td>
+        <td><%= remove_button("Remove", attrib_path(:node_id => node, :id => attrib.id), 'Are you sure?') %>
+        </td>
     </tr>
 </table>

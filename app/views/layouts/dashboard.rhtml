@@ -1,27 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title>iClassify: Dashboard</title>
-  <%= stylesheet_link_tag 'iclassify' %>
-  <%= javascript_include_tag "jquery-1.2.1.pack.js" %>
-  <%= javascript_include_tag "autocomplete.js" %>
-  <%= javascript_include_tag "jquery.form.js" %>
-  <%= javascript_include_tag "jquery.livequery.min.js" %>
-  <%= javascript_include_tag "iclassify.js" %>
-</head>
-<body>
-    
 <%= render :partial => "layouts/header" %>
-
 <div id="content">
 <p style="color: green"><%= flash[:notice] %></p>
 <%= yield  %>
 </div>
-
 <%= render :partial => "layouts/tag_list" %>
-
-</body>
-</html>
+<%= render :partial => "layouts/footer" %>

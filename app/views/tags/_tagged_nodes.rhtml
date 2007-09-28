@@ -33,20 +33,3 @@
 <% end -%>
 </div>
 </div>
-
-<script type="text/javascript" charset="utf-8">
-/*
-  $('#show_tags_for_<%= tag.id %>').click(function() { 
-        $('#tag_node_list_<%= tag.id %>').slideToggle("fast"); 
-        return false; 
-    });
-  $("#tag_<%= tag.id %>_add_node").ajaxForm({
-    dataType: 'html',
-    beforeSend: function(xhr) {xhr.setRequestHeader("Accept", "text/html");},
-    success: function(data) {
-        $('#tag_list_<%= tag.id %>').html(data);
-    }
-  });
-  $("#tag_new_node_<%= tag.id %>").autocomplete('<%= url_for(:controller => "nodes", :action => "autocomplete") %>');
-  */
-</script>

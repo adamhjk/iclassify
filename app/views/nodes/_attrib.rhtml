@@ -1,18 +1,20 @@
-  <h2>Edit Attribute '<%= h attrib.name %>'</h2> (<%= link_to_remote 'Remove Attribute', :url => attrib_url(:node_id => @node.id, :id => attrib.id), :method => :delete %>)
+  <h2 class="inline">Edit Attribute '<%= h attrib.name %>'</h2> 
+  <%= remove_button_remote("remove_button_attrib_#{attrib.id}", "Remove Attribute", attrib_url(:node_id => @node.id, :id => attrib.id), "attributes_list", "Really delete attribute #{h attrib.name}?") %>
+  
   <p style="color: green" id="attrib_edit_<%= attrib.id %>_notice"><%= flash["attrib_edit_#{attrib.id}_notice".to_sym] %></p> 
 <%= error_messages_for :attrib %>
 <% attrib.avalues.each do |avalue| %>
 <%= error_messages_for :avalue %>
-    <% remote_form_for :avalue, avalue, :url => avalue_url(:node_id => @node.id, :attrib_id => attrib.id, :id => avalue.id), :html => { :method => 'put' } do |form| %>
+    <% form_for :avalue, avalue, :url => avalue_url(:node_id => @node.id, :attrib_id => attrib.id, :id => avalue.id), :html => { :class => "remote_form inline", :id => "edit_avalue_#{avalue.id}", :method => 'put', :update => "attrib_edit_#{attrib.id}" } do |form| %>
     <%= render :partial => 'avalues/form', :locals => { :attrib => attrib, :node => @node, :form => form }  %>
     <%= submit_tag "Update" %>
-    <%= link_to_remote 'Remove', :url => avalue_url(:node_id => @node.id, :attrib_id => attrib.id, :id => avalue.id), :method => :delete %>
     <% end %>
+    <%= remove_button_remote("remove_button_avalue_#{avalue.id}", "Remove Value", avalue_url(:node_id => @node.id, :attrib_id => attrib.id, :id => avalue.id), "attrib_edit_#{attrib.id}", "Really delete #{h attrib.name} value #{h avalue.value}")%>
 <% end %>
 
   <h3>Add Value</h3>
 <%= error_messages_for :avalue %>
-<% remote_form_for :avalue, attrib.avalues.new, :url => avalues_url(:node_id => @node.id, :attrib_id => attrib.id), :html => { :method => 'post' } do |form| %>
+<% form_for :avalue, attrib.avalues.new, :url => avalues_url(:node_id => @node.id, :attrib_id => attrib.id), :html => { :id => "new_avalue_#{h attrib.id}", :class => "remote_form", :method => 'post', :update => "attrib_edit_#{attrib.id}" } do |form| %>
 <%= render :partial => 'avalues/form', :locals => { :attrib => attrib, :node => @node, :form => form }  %>
-<%= submit_tag "Add" %>
+<%= submit_tag "Add" %><%= spinner_tag "new_avalue_#{h attrib.id}_spinner" %>
 <% end %>

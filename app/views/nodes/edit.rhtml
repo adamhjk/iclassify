@@ -18,13 +18,8 @@
     <% end %>
 </div>
 
-<div id="new_attribute_data">
-    <div id="Add an Attribute" class="fieldset">
-        <h2>Add an Attribute</h2>
-    <% remote_form_for :attrib, :url => attribs_url(:node_id => @node) do |form| %>
-    <%= render :partial => "/attribs/form", :locals => { :node => @node, :form => form }%>
-    <%= submit_tag "Add Attribute "%>
-    <% end%>
+<div id="new_attribute_data" class="fieldset">
+    <%= render :partial => "/attribs/form", :locals => { :node => @node, :heading => "Add an Attribute", :url => attribs_url(:node_id => @node) } %>
 </div>
 <div id="attributes_list">
     <%= render :partial => "attrib_list", :locals => { :node => @node }%>

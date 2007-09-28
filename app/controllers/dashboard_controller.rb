@@ -43,9 +43,11 @@ class DashboardController < ApplicationController
       @tags ||= Array.new
       @nodes = Node.find_by_contents(params[:search_query], { :limit => :all }, { :order => ['description']})
       if params[:search_query] == "tag:unclassified"
-        @partial_to_render = "dashboard/unclassified_nodes"
+        @partial_to_render = "search/bulk_tag"
+        @heading = "Unclassified Nodes"
       else
         @partial_to_render = "search/bulk_tag"
+        @heading = "Search Results"
       end
     else
       flash[:bulk_tags_notice] = "You must select some nodes to tag!"
@@ -54,9 +56,11 @@ class DashboardController < ApplicationController
       @tags ||= Array.new
       @nodes = Node.find_by_contents(params[:search_query], { :limit => :all }, { :order => ['description']})
       if params[:search_query] == "tag:unclassified"
-        @partial_to_render = "dashboard/unclassified_nodes"
+        @partial_to_render = "search/bulk_tag"
+        @heading = "Unclassified Nodes"
       else
         @partial_to_render = "search/bulk_tag"
+        @heading = "Search Results"
       end
     end
   end

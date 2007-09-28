@@ -1,1 +1,7 @@
-<%= form.text_field :name %>
+<h2><%= heading %></h2>
+ <% form_for(:attrib, :url => url, :html => { :id => "add_attribute", :class => "remote_form", :update => "attributes_list" }) do |form| %>
+ <%= form.text_field :name %>
+ <%= submit_tag "Add Attribute "%>
+ <%= spinner_tag "add_attribute_spinner" %>
+ <% end%>
+

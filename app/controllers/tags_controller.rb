@@ -162,7 +162,8 @@ class TagsController < ApplicationController
           :tagged_nodes => @tag.nodes.sort { |a,b| a.description <=> b.description }, 
           :tag => @tag,
           :node_count => @tag.nodes.count,
-          :visible => true 
+          :visible => true,
+          :update_div_id => "tag_list_2",
         }
       )
     else

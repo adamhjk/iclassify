@@ -1,12 +1,33 @@
-<table>
+<table id="<%= table_id %>" class="nodelist tablesorter<%= checkbox ? " bulk_tag" : "" %>">
+    <thead>
+        <tr>
+            <% if checkbox %>
+            <th>
+            </th>
+            <% end %>
+            <th>Description&nbsp&nbsp&nbsp&nbsp</th>
+            <th>UUID</th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
     <% nodes.each do |node| -%>
     <tr>
-    
+        <% if checkbox %>
         <td>
-        <%= link_to("#{h node.description} (#{h node.uuid})", node_path(node)) %></td>
+            <%= check_box_tag("tag_nodes[#{node.id}]", node.id, false, :class => "tag_node") %> 
+        </td>
+        <% end %>
+        <td>
+        <%= link_to("#{h node.description}", node_path(node)) %></td>
+        <td><%= h node.uuid %></td>
         <td>
             <%= edit_button("Edit", edit_node_path(node))%>
             <%= remove_button("Delete", node_path(node), "Delete node #{h node.description}?")%>            
         </tr>
     <% end -%>
+    </tbody>
 </table>
+<div id="nodelist_pager">
+</div>

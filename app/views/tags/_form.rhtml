@@ -1,21 +1,9 @@
 <div id="tag_widget" class="fieldset">
   <h2><%= legend %></h2>
   Tags: 
+
   <%= text_field_tag("tag_list", current_tags.collect { |t| t.name }.sort.join(" "), :size => 50, :autocomplete => "off") %>
-  <%= submit_tag "Save", :id => "tag_widget_submit" %> <%= image_tag "spinner.gif", :id => "tag_widget_spinner", :style => "display:none;" %> (space separated, replaces current list)
-  <%= observe_field(
-        "tag_list", 
-        :frequency => 0.5, 
-        :function => "autocomplete_manual_tags()"
-      ) -%> 
-      
-      <%= observe_field(
-        "tag_widget_submit",
-        :function => "return false();",
-        :on => "click",
-        :before => "Element.show('tag_widget_spinner')",
-        :complete => "Element.hide('tag_widget_spinner')"
-      )%>
+  <%= submit_tag "Save", :id => "tag_widget_submit" %> <%= spinner_tag "bulk_tag_spinner" %> (space separated, replaces current list)
   <br/>
   
   <h3>Your Tags </h3>
@@ -24,7 +12,7 @@
     <% tag_present = current_tags.detect { |t| t == tag } -%>
     <% tag_present = tag_present ? true : false -%>
     <% tag_cloud_id = "tag_cloud_id_#{h tag.name}" -%>
-    <a href="javascript:void(0)" class="<%= tag_present ? "tag_present" : nil %>" id="<%= tag_cloud_id %>" onclick="update_tag_list('<%= h tag.name %>', '<%= tag_cloud_id %>', <%= tag_present %>); return false;"><%= h tag.name %></a>
+    <a href="javascript:void(0);" class="tag_cloud_entry <%= tag_present ? "tag_present" : nil %>" id="<%= tag_cloud_id %>" tag="<%= h tag.name %>"><%= h tag.name %></a>
   <% end -%>
   </p>
 </div>

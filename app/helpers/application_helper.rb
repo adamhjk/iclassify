@@ -70,6 +70,18 @@ module ApplicationHelper
     )
   end
   
+  def remove_button_rjs(id, alt, url, confirm)
+    jquery_link_to_remote(
+      :id => id, 
+      :link_text => image_tag("list-remove.png", :alt => alt, :class => "button"),
+      :url => url, 
+      :update => false, 
+      :data_type => "script",
+      :confirm => confirm,
+      :method => :delete
+    )
+  end
+  
   def jquery_link_to_remote(options)
     id = options.has_key?(:id) ? options[:id] : raise("Must provide an id!")
     link_text = options.has_key?(:link_text) ? options[:link_text] : raise("Must provide a link")
@@ -77,17 +89,19 @@ module ApplicationHelper
     update = options.has_key?(:update) ? options[:update] : raise("Must provide something to update")
     confirm = options.has_key?(:confirm) ? options[:confirm] : nil
     method = options.has_key?(:method) ? options[:method] : :get
-    options = {
+    data_type = options.has_key?(:data_type) ? options[:data_type] : "html"
+    ajax_options = {
       :id => id,
-      :update => update,
       :class => "link_to_remote",
-      :http_method => method.to_s 
+      :http_method => method.to_s,
+      :data_type => data_type 
     }
-    options[:confirm_with] = confirm if confirm
+    ajax_options[:update] = options[:update] if update
+    ajax_options[:confirm_with] = confirm if confirm
     results = link_to(
       link_text,
       url,
-      options
+      ajax_options
     )
     results << spinner_tag("#{id}_spinner")
   end

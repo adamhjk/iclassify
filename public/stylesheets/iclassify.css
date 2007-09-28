@@ -336,3 +336,16 @@ div.jqi button{
 	background-color: Highlight;
 	color: HighlightText;
 }
+
+h1.inline {
+  display: inline;
+}
+
+
+h2.inline {
+  display: inline;
+}
+
+form.inline {
+  display: inline;
+}

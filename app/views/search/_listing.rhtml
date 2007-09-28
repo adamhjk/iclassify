@@ -1,21 +1,7 @@
 <div id="node_listing" class="fieldset">
     <h2>Nodes</h2>
-<%= link_to_function("Select All Nodes", 'select_all_tag_nodes(true)')%> or
-<%= link_to_function("Unselect All Nodes", 'select_all_tag_nodes(false)')%>
-    <table>
-    <% nodes.each do |node| -%>
-    <tr>
-        <td>
-        <%= check_box_tag("tag_nodes[#{node.id}]", node.id, false, :class => "tag_node") %> 
-        </td>
-        <td>
-        <%= link_to("#{h node.description} (#{h node.uuid})", node_path(node)) %> 
-        </td>
-        <td>
-        [<%= link_to 'Edit', edit_node_path(node) %>, <%= link_to 'Delete', node_path(node), :confirm => 'Are you sure?', :method => :delete %>]
-        </td> 
-    </tr>
-    <% end -%>
-    </table>
+<%= link_to "Select All Nodes", "javascript: void(0);", { :class => "select_all", :to_select => "tag_node" } %>
+<%= link_to "Unselect All Nodes", "javascript: void(0);", { :class => "unselect_all", :to_select => "tag_node" } %>
+    <%= render :partial => "nodes/listing", :locals => { :checkbox => true, :nodes => nodes, :table_id => "search_list" }%>
     <%= render :partial => "tags/form", :locals => { :current_tags => Array.new, :tags => tags, :legend => "Bulk Tag (applies to all selected nodes)" } %>
 </div>

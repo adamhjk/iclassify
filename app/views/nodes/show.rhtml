@@ -1,7 +1,10 @@
 <div class="section_box">
-<h1>Node <%= h @node.description %> (<%= h @node.uuid %>)</h1>
-[<%= link_to 'Edit', edit_node_path(@node) %>, <%= link_to 'Delete', node_path(@node), :confirm => 'Are you sure?', :method => :delete %>]
+<h1 class="inline">Node <%= h @node.description %></h1>
 
+<%= edit_button("Edit", edit_node_path(@node)) %>
+
+<%= remove_button("Delete", node_path, 'Are you sure?') %>
+ 
 <table class="node_display">
   <tr class="odd">
     <th>UUID</th><td><%= h @node.uuid %></td>

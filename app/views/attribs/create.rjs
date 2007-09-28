@@ -1,6 +1,4 @@
-page.replace_html(
-  "attributes_list", 
-  :partial => "nodes/attrib_list", 
-  :locals => { :node => @node }
+page["#attributes_list"].html(
+  render :partial => "nodes/attrib_list", :locals => { :node => @node }
 )
-page["attrib_edit_#{@attrib.id}_notice".to_sym].visual_effect(:highlight, :startcolor => "#88ff88", :endcolor => "#FFFFFF")
+page["#attrib_edit_#{@attrib.id}_notice"].fadeIn("slow")
