@@ -4,5 +4,5 @@
 </div>
 <div class="section_box">
 <h1>All Nodes</h1>
-<%= render :partial => "nodes/listing", :locals => { :nodes => @all_nodes.sort { |a,b| a.description <=> b.description } }%>
+<%= render :partial => "nodes/listing", :locals => { :table_id => "all_nodes_list", :checkbox => false, :nodes => @all_nodes.sort { |a,b| a.description <=> b.description } }%>
 </div>
