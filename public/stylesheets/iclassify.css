@@ -229,6 +229,10 @@ img.button {
   border: 1px solid gray;
 }
 
+div.tag_widget {
+  width: 300px;
+}
+
 div.left_box {
   float: left;
 }
