@@ -1,5 +1,4 @@
-#!/usr/bin/env script/runner
-
+#!/usr/bin/env ruby
 # Ferret DRb server launcher script
 #
 # Place doc/ferret_server.yml into RAILS_ROOT/config and fit to taste. Start
@@ -18,12 +17,20 @@
 # The server writes a log file in log/ferret_server.log, it's 
 # STDOUT gets redirected to log/ferret_server.out
 
+ENV['FERRET_USE_LOCAL_INDEX'] = 'true'
+
+unless defined?(ActiveRecord)
+  # avoid loading rails if this already happened (when running via script/runner)
+  require File.dirname(__FILE__) + '/../config/boot' 
+  require RAILS_ROOT + '/config/environment'
+end
 
 config = ActsAsFerret::Remote::Config.load
 @pid_file = config['pid_file']
 
 def write_pid_file
-    open(@pid_file,"w") {|f| f.write(Process.pid) }
+  raise "No PID file defined" if @pid_file.blank?
+  open(@pid_file,"w") {|f| f.write(Process.pid) }
 end
 
 def safefork
@@ -59,7 +66,8 @@ begin
   STDOUT.reopen "#{RAILS_ROOT}/log/ferret_server.out", "a" # point them somewhere sensible
   STDERR.reopen STDOUT                                     # STDOUT/STDERR should go to a logfile
 rescue
-  puts "Error starting ferret DRb server: #{$!}"
+  $stderr.puts "Error starting ferret DRb server: #{$!}"
+  $stderr.puts $!.backtrace
   exit(1)
 end
 DRb.thread.join

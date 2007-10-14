@@ -11,6 +11,6 @@ Facter.each do |name, value|
   if exists
     exists[:values] = [ value ]
   else
-    add_attrib(name, value)
+    add_attrib(name, value, "ro")
   end
 end
