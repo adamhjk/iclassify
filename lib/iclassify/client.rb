@@ -1,5 +1,4 @@
 require 'rubygems'
-require File.dirname(__FILE__) + '/node'
 require 'net/http'
 require 'rexml/document'
 require 'uri'
@@ -50,22 +49,22 @@ module IClassify
     private
     
       def get_rest(path, args=false)
-        url = URI.parse("#{@url}/#{path}")
+        url = URI.parse("#{@url}/#{path}.xml")
         run_request(:GET, url, args)
       end
       
       def delete_rest(path)
-        url = URI.parse("#{@url}/#{path}")
+        url = URI.parse("#{@url}/#{path}.xml")
         run_request(:DELETE, url)
       end 
       
       def post_rest(path, xml)
-        url = URI.parse("#{@url}/#{path}")
+        url = URI.parse("#{@url}/#{path}.xml")
         run_request(:POST, url, xml)
       end
       
       def put_rest(path, xml)
-        url = URI.parse("#{@url}/#{path}")
+        url = URI.parse("#{@url}/#{path}.xml")
         run_request(:PUT, url, xml)
       end
       

@@ -35,7 +35,6 @@ class AvaluesController < ApplicationController
  end
 
  # POST /nodes/:node_id/attribs
- # POST /nodes/:node_id/attribs.xml
  def create    
    @avalue = Avalue.new(params[:avalue])
    
@@ -52,7 +51,6 @@ class AvaluesController < ApplicationController
  end
 
  # PUT /nodes/:node_id/attribs/1
- # PUT /nodes/:node_id/attribs/1.xml
  def update
    @avalue = @attrib.avalues.find(params[:id])
    if @avalue.update_attributes(params[:avalue])
@@ -68,7 +66,6 @@ class AvaluesController < ApplicationController
  end
 
  # DELETE /nodes/:node_id/attribs/1
- # DELETE /nodes/:node_id/attribs/1.xml
  def destroy
    @attrib.avalues.find(params[:id]).destroy
    flash["attrib_edit_#{@attrib.id}_notice".to_sym] = "Removed a value."

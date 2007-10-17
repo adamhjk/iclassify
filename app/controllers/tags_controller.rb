@@ -48,10 +48,6 @@ class TagsController < ApplicationController
   # GET /tags/
   def all_index
     @tags = Tag.find(:all, :order => :name)
-    respond_to do |format|
-       format.html 
-       format.xml { render :layout => false, :template => 'tags/all_index.rxml' }
-     end
   end
   
   # GET /tags/:id

@@ -21,9 +21,5 @@ class SearchController < ApplicationController
     @nodes ||= Array.new
     @tags = Tag.find(:all)
     @tags ||= Array.new
-    respond_to do |format|
-      format.html # index.rhtml
-      format.xml { render :layout => false, :template => 'search/index.rxml' }
-    end
   end
 end

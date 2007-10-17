@@ -1,5 +1,0 @@
-xml.tags do
-  @tags.each do |tag|
-    xml.tag(tag.name, :id => tag.id)
-  end
-end

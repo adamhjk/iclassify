@@ -21,4 +21,20 @@
 class ApplicationController < ActionController::Base
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_iclassify_session_id'
+  
+  def populate_tags_and_attribs(params=nil)
+    tags = Array.new
+    attribs = Array.new
+    if params[:node].has_key?(:tags)
+      thash = params[:node].delete(:tags) 
+      tags = thash[:tag]
+    end
+    if params[:node].has_key?(:attribs)
+      ahash = params[:node].delete(:attribs)
+      attribs = ahash.kind_of?(Hash) ? [ ahash[:attrib] ] : Array.new
+      attribs.flatten!
+    end
+    logger.debug("Attribs: #{attribs.to_yaml}")
+    return tags, attribs
+  end
 end

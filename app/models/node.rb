@@ -71,6 +71,24 @@ class Node < ActiveRecord::Base
     resultset
   end
   
+  def self.find_by_unique(unique)
+    node = nil
+    node_unique_field = nil
+    case unique
+    when /^[[:xdigit:]]{8}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{12}$/
+      node = find_by_uuid(unique)
+      node_unique_field = node.uuid if node
+    when /^\d+$/
+      node = find_by_id(unique)
+      node_unique_field = node.id if node
+    else
+      node = find_by_description(unique)
+      logger.info node.to_yaml
+      node_unique_field = node.description if node
+    end
+    return node, node_unique_field
+  end
+  
   def self.bulk_tag(node_hash, tags)
     node_hash.each do |node_id, value|
       node = find(node_id.to_i)

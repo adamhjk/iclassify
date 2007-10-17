@@ -1,2 +1,0 @@
-render :partial => "node", 
-       :locals => { :xml_instance => xml, :node => @node.rest_serialize }

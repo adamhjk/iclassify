@@ -61,13 +61,8 @@ class Tag < ActiveRecord::Base
     rest_hash = Hash.new
     rest_hash[:id] = id
     rest_hash[:name] = name
+    rest_hash[:nodes] = nodes.collect { |n| n.rest_serialize }
     rest_hash
-  end
-  
-  def tag_list
-  end
-  
-  def tag_list=(space_tags=nil)
   end
   
 end

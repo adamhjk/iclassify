@@ -25,11 +25,6 @@ class DashboardController < ApplicationController
     @tags = Tag.find(:all)
     @tags ||= Array.new
     @all_nodes = Node.find(:all)
-    
-    respond_to do |format|
-      format.html # index.rhtml
-      format.xml { render :layout => false, :template => 'dashboard/index.rxml' }
-    end
   end
   
   def bulk_tag
