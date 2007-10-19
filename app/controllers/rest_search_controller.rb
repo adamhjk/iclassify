@@ -1,6 +1,6 @@
 class RestSearchController < ApplicationController
   def index
-    @nodes = Node.find_by_contents(params[:q], { :limit => :all }, { :order => [ 'description' ]}) if params[:q]
+    @nodes = Node.find_record_by_solr(params[:q]) if params[:q]
     @nodes ||= Array.new
     @tags = Tag.find(:all)
     @tags ||= Array.new

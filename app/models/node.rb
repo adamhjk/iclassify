@@ -28,32 +28,75 @@ class Node < ActiveRecord::Base
                       :with    => UUID_REGEX,
                       :message => "Must be a valid UUID"
                       
-  acts_as_ferret(:fields => [ :uuid, :notes, :description, :tag ], :remote =>  true )
+  # acts_as_ferret(:fields => [ :uuid, :notes, :description, :tag ], :remote =>  true )
+  
+  acts_as_solr(:fields => [ :uuid, :notes, :description, :tag ], 
+               :auto_commit => true)
+  
   # FIXME: Acts as tree needs to be added.
   # acts_as_tree   :order => :uuid 
   
   # turn this instance into a ferret document (which basically is a hash of
   # fieldname => value pairs)
-  def to_doc
-    logger.debug "creating doc for class: #{self.class.name}, id: #{self.id}"
-    returning doc = Ferret::Document.new do
-      # store the id of each item
-      doc[:id] = self.id
-
-      # store the class name if configured to do so
-      doc[:class_name] = self.class.name if aaf_configuration[:store_class_name]
-    
-      # iterate through the fields and add them to the document
-      aaf_configuration[:ferret_fields].each_pair do |field, config|
-        doc[field] = self.send("#{field}_to_ferret") unless config[:ignore]
-      end
-      
-      # Add attribute fields
+  #def to_doc
+  #  logger.debug "creating doc for class: #{self.class.name}, id: #{self.id}"
+  #  returning doc = Ferret::Document.new do
+  #    # store the id of each item
+  #    doc[:id] = self.id
+  #
+  #    # store the class name if configured to do so
+  #    doc[:class_name] = self.class.name if aaf_configuration[:store_class_name]
+  #  
+  #    # iterate through the fields and add them to the document
+  #    aaf_configuration[:ferret_fields].each_pair do |field, config|
+  #      doc[field] = self.send("#{field}_to_ferret") unless config[:ignore]
+  #    end
+  #    
+  #    # Add attribute fields
+  #    attribs.each do |attrib|
+  #      if attrib.name != "id" && attrib.name != "class_name"
+  #        doc[attrib.name] = attrib.avalues.collect {|av| av.value}
+  #      end
+  #    end
+  #  end
+  #end
+  
+  def self.find_record_by_solr(q)
+    ids = find_id_by_solr(q, :limit => :all)
+    if ids
+      logger.debug(ids.to_yaml)
+      find_by_sql("SELECT id, uuid, description, notes FROM nodes WHERE id IN (#{ids.docs.join(', ')}) ORDER BY description")
+    else
+      logger.debug("returning nothing")
+      Array.new
+    end
+  end
+  
+  # saves to the Solr index
+  def solr_save
+    return true unless configuration[:if] 
+    if evaluate_condition(configuration[:if], self) 
+      logger.debug "solr_save: #{self.class.name} : #{record_id(self)}"
+      this_doc = to_solr_doc
+      field_type = configuration[:facets] && configuration[:facets].include?(field) ? :facet : :text
+      field_boost= solr_configuration[:default_boost]
+      suffix = get_solr_field_type(field_type)
       attribs.each do |attrib|
-        if attrib.name != "id" && attrib.name != "class_name"
-          doc[attrib.name] = attrib.avalues.collect {|av| av.value}
+        if attrib.name != "id"
+          attrib.avalues.collect { |av| av.value }.each do |v|
+            v = set_value_if_nil(suffix) if v.to_s == ""
+            logger.debug("adding field #{attrib.name}_#{suffix}: #{v.to_s}")
+            field = Solr::Field.new("#{attrib.name}_#{suffix}" => ERB::Util.html_escape(v.to_s))
+            this_doc << field 
+          end
         end
       end
+      logger.debug(this_doc.to_xml)
+      solr_add(this_doc)
+      solr_commit if configuration[:auto_commit]
+      true
+    else
+      solr_destroy
     end
   end
   

@@ -23,13 +23,14 @@ class Tag < ActiveRecord::Base
     :with => /\A(\w|\-)+\Z/, 
     :message => "Name must be alphanumeric plus _ and -."
   
-  after_create  :update_ferret
-  after_update  :update_ferret
-  after_destroy :update_ferret
+  after_create  :update_solr
+  after_update  :update_solr
+  after_destroy :update_solr
+  after_save    :update_solr
   
-  def update_ferret
+  def update_solr
     nodes.each do |node|
-      node.ferret_update
+      node.solr_save
     end
   end
   

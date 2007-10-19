@@ -21,9 +21,10 @@ class Attrib < ActiveRecord::Base
   
   validates_presence_of :name, :message => "Must have a name"
   
-  after_create :update_ferret
-  after_update :update_ferret
-  after_destroy :update_ferret
+  after_create  :update_solr
+  after_update  :update_solr
+  after_destroy :update_solr
+  after_save    :update_solr
   
   def self.get_all_names
     find(:all, :select => "name", :group => "name").collect { |a| a.name }
@@ -64,7 +65,7 @@ class Attrib < ActiveRecord::Base
     attrib_array
   end
       
-  def update_ferret
-    node.ferret_update
+  def update_solr
+    node.solr_save
   end
 end

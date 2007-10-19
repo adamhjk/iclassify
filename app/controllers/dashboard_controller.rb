@@ -36,7 +36,7 @@ class DashboardController < ApplicationController
       redirect_to(url_for(:controller => "dashboard", :action => "index")) unless request.xhr?
       @tags = Tag.find(:all)
       @tags ||= Array.new
-      @nodes = Node.find_by_contents(params[:search_query], { :limit => :all }, { :order => ['description']})
+      @nodes = Node.find_record_by_solr(params[:search_query])
       if params[:search_query] == "tag:unclassified"
         @partial_to_render = "search/bulk_tag"
         @heading = "Unclassified Nodes"
@@ -49,7 +49,7 @@ class DashboardController < ApplicationController
       redirect_to(url_for(:controller => "dashboard", :action => "index")) unless request.xhr?
       @tags = Tag.find(:all)
       @tags ||= Array.new
-      @nodes = Node.find_by_contents(params[:search_query], { :limit => :all }, { :order => ['description']})
+      @nodes = Node.find_record_by_solr(params[:search_query])
       if params[:search_query] == "tag:unclassified"
         @partial_to_render = "search/bulk_tag"
         @heading = "Unclassified Nodes"
