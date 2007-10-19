@@ -1,6 +1,0 @@
-production:
-  host: 127.0.0.1 
-  port: 9010
-  pid_file: log/ferret.pid
-  
-
