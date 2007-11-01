@@ -26,6 +26,7 @@ class Tag < ActiveRecord::Base
   after_create  :update_ferret
   after_update  :update_ferret
   after_destroy :update_ferret
+  after_save    :update_ferret
   
   def update_ferret
     nodes.each do |node|

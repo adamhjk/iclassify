@@ -24,6 +24,7 @@ class Attrib < ActiveRecord::Base
   after_create :update_ferret
   after_update :update_ferret
   after_destroy :update_ferret
+  after_save   :update_ferret
   
   def self.get_all_names
     find(:all, :select => "name", :group => "name").collect { |a| a.name }
