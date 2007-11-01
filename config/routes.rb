@@ -54,6 +54,11 @@ ActionController::Routing::Routes.draw do |map|
     :action => "index",
     :conditions => { :method => :get }
 
+  map.rest_search "rest/search.:format",
+    :controller => "rest_search",
+    :action => "index",
+    :conditions => { :method => :post }
+
   map.connect "nodes/autocomplete",
     :controller => "nodes",
     :action => "autocomplete",

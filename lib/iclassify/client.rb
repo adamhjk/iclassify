@@ -9,6 +9,7 @@ module IClassify
      UUID_REGEX = /^[[:xdigit:]]{8}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{12}$/
   
     def initialize(service_url)
+      service_url = "#{service_url}/rest" unless service_url =~ /rest$/
       @url = URI.parse(service_url)
     end
   
