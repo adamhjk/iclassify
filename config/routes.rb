@@ -1,53 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
-  map.rest_nodes "rest/nodes.:format",
-    :controller => "rest_nodes",
-    :action => "index",
-    :conditions => { :method => :get }
   
-  map.rest_nodes "rest/nodes.:format",
-    :controller => "rest_nodes",
-    :action => "create",
-    :conditions => { :method => :post }
-  
-  map.rest_node "rest/nodes/:id.:format",
-    :controller => "rest_nodes",
-    :action => "show",
-    :conditions => { :method => :get }
-  
-  map.rest_node "rest/nodes/:id.:format",
-    :controller => "rest_nodes",
-    :action => "update",
-    :conditions => { :method => :put }
-  
-  map.rest_node "rest/nodes/:id.:format",
-    :controller => "rest_nodes",
-    :action => "destroy",
-    :conditions => { :method => :delete }  
-    
-  map.rest_tags "rest/tags.:format",
-    :controller => "rest_tags",
-    :action => "index",
-    :conditions => { :method => :get }
-
-  map.rest_tags "rest/tags.:format",
-    :controller => "rest_tags",
-    :action => "create",
-    :conditions => { :method => :post }
-
-  map.rest_tag "rest/tags/:id.:format",
-    :controller => "rest_tags",
-    :action => "show",
-    :conditions => { :method => :get }
-
-  map.rest_tag "rest/tags/:id.:format",
-    :controller => "rest_tags",
-    :action => "update",
-    :conditions => { :method => :put }
-
-  map.rest_tag "rest/tags/:id.:format",
-    :controller => "rest_tags",
-    :action => "destroy",
-    :conditions => { :method => :delete }
+  map.resources :nodes, :path_prefix => "/rest", :name_prefix => "rest_", :controller => "rest_nodes"
+  map.resources :tags,  :path_prefix => "/rest", :name_prefix => "rest_", :controller => "rest_tags"
     
   map.rest_search "rest/search.:format",
     :controller => "rest_search",
