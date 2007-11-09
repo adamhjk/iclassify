@@ -11,7 +11,6 @@ module IClassify
     # a UUID, and a server URL.
     #
     def initialize(uuidfile="/etc/icagent/icagent.uuid", server_url="http://localhost:3000")
-      server_url = "#{server_url}/rest" unless server_url =~ /rest$/
       @client = IClassify::Client.new(server_url)
       if File.exists?(uuidfile)
         IO.foreach(uuidfile) do |line|

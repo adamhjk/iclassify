@@ -21,7 +21,7 @@
 #
 
 require 'rubygems'
-require File.dirname(__FILE__) + '/../lib/iclassify/agent'
+require File.dirname(__FILE__) + '/../lib/iclassify'
 require 'optparse'
 require 'tempfile'
 require 'open3'

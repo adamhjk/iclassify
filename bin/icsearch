@@ -21,7 +21,7 @@
 #
 
 require 'rubygems'
-require File.dirname(__FILE__) + '/../lib/iclassify/client'
+require File.dirname(__FILE__) + '/../lib/iclassify'
 require 'optparse'
 
 config = {
@@ -63,11 +63,11 @@ rescue SocketError
 end
 
 if config.has_key?(:attribs)
-  header = "# uuid,#{config[:attribs].join(',')}"
+  header = "# description,uuid,#{config[:attribs].join(',')}"
   header << ",tags" if config.has_key?(:tags)
   puts header
   results.each do |node|
-    line = [ "#{node.uuid}" ]
+    line = [ "#{node.description}", "#{node.uuid}" ]
     config[:attribs].each do |attrib|
       na = node.attribs.detect { |a| a[:name] == attrib }
       if na

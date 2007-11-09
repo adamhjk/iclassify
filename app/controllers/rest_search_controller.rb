@@ -5,7 +5,11 @@ class RestSearchController < ApplicationController
     @tags = Tag.find(:all)
     @tags ||= Array.new
     respond_to do |format|
-      format.xml { render :layout => false }
+      format.xml { render :layout => false, :template => "rest_search/index.rxml" }
     end
+  end
+  
+  def create
+    index
   end
 end
