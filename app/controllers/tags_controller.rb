@@ -176,6 +176,8 @@ class TagsController < ApplicationController
     @tag = Tag.find(params[:id])
     node = Node.find(:first, :conditions => [ "description = ?", params[:new_node] ])
     node.tags << @tag unless node.tags.detect { |t| t.name == @tag.name }
+    node.save
+    node.reload
     @tag.reload
     if request.xhr?
       render(:partial => "/tags/tagged_nodes", 

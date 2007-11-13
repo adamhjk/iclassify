@@ -1,4 +1,6 @@
 class RestSearchController < ApplicationController
+  session :disabled => true
+  
   def index
     @nodes = Node.find_by_contents(params[:q], { :limit => :all }, { :order => [ 'description' ]}) if params[:q]
     @nodes ||= Array.new
