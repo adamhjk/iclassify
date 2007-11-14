@@ -20,12 +20,12 @@ class Avalue < ActiveRecord::Base
   
   validates_presence_of :value, :message => "You must have a value!"
   
-  after_create :update_ferret
-  after_update :update_ferret
-  after_destroy :update_ferret
-  after_save :update_ferret
+  after_create  :update_solr
+  after_update  :update_solr
+  after_destroy :update_solr
+  after_save    :update_solr
   
-  def update_ferret
-    attrib.node.ferret_update
+  def update_solr
+    attrib.node.solr_save
   end
 end

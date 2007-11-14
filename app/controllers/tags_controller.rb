@@ -151,11 +151,8 @@ class TagsController < ApplicationController
   # DELETE /tags/:id/nodes/:node_id
   def all_node_destroy
     @tag = Tag.find(params[:id])
-    node = Node.find(params[:node_id])
-    node.tags.delete(@tag)
-    node.save
-    @tag.reload
-    #@tag.nodes.delete(Node.find(params[:node_id]))
+    del_nodes = @tag.nodes.delete(Node.find(params[:node_id]))
+    del_nodes.each { |n| n.solr_save }
     if request.xhr?
       render(:partial => "/tags/tagged_nodes", 
         :locals => { 
@@ -174,11 +171,11 @@ class TagsController < ApplicationController
   # POST /tags/:id/nodes
   def all_node_add
     @tag = Tag.find(params[:id])
-    node = Node.find(:first, :conditions => [ "description = ?", params[:new_node] ])
-    node.tags << @tag unless node.tags.detect { |t| t.name == @tag.name }
-    node.save
-    node.reload
-    @tag.reload
+    unless @tag.nodes.detect { |n| n.description == params[:new_node] }
+      node = Node.find(:all, :conditions => [ "description = ?", params[:new_node] ])
+      @tag.nodes << node
+      node.each { |n| n.solr_save }
+    end
     if request.xhr?
       render(:partial => "/tags/tagged_nodes", 
         :locals => { 

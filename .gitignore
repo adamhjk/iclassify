@@ -5,3 +5,7 @@ db/iclassify_*
 db/schema.rb
 icagent.uuid
 index/*
+vendor/plugins/acts_as_solr/solr/solr/data/*
+vendor/plugins/acts_as_solr/solr/logs/*
+vendor/plugins/acts_as_solr/solr/tmp/*
+
