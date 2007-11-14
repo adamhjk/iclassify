@@ -33,34 +33,6 @@ class Node < ActiveRecord::Base
   acts_as_solr(:fields => [ {:uuid => :text}, {:notes => :text}, {:description => :text}, {:tag => :text} ], 
                :auto_commit => true)
   
-  # FIXME: Acts as tree needs to be added.
-  # acts_as_tree   :order => :uuid 
-  
-  # turn this instance into a ferret document (which basically is a hash of
-  # fieldname => value pairs)
-  #def to_doc
-  #  logger.debug "creating doc for class: #{self.class.name}, id: #{self.id}"
-  #  returning doc = Ferret::Document.new do
-  #    # store the id of each item
-  #    doc[:id] = self.id
-  #
-  #    # store the class name if configured to do so
-  #    doc[:class_name] = self.class.name if aaf_configuration[:store_class_name]
-  #  
-  #    # iterate through the fields and add them to the document
-  #    aaf_configuration[:ferret_fields].each_pair do |field, config|
-  #      doc[field] = self.send("#{field}_to_ferret") unless config[:ignore]
-  #    end
-  #    
-  #    # Add attribute fields
-  #    attribs.each do |attrib|
-  #      if attrib.name != "id" && attrib.name != "class_name"
-  #        doc[attrib.name] = attrib.avalues.collect {|av| av.value}
-  #      end
-  #    end
-  #  end
-  #end
-  
   def self.find_record_by_solr(q)
     ids = find_id_by_solr(q, :limit => :all)
     if ids
@@ -99,38 +71,7 @@ class Node < ActiveRecord::Base
       solr_destroy
     end
   end
-  
-  def check_solr_string(v)
-    if v =~ /(\.|\_|\:|\*|\(|\)|\-|\=)/
-      get_solr_field_type(:text)
-    else
-      get_solr_field_type(:text)
-    end
-  end
-  
-  # Replaces the field types based on the types (if any) specified
-  # on the acts_as_solr call
-  def replace_types(strings, include_colon=true)
-    suffix = include_colon ? ":" : ""
-    if configuration[:solr_fields] && configuration[:solr_fields].is_a?(Array)
-      configuration[:solr_fields].each do |solr_field|
-        field_type = get_solr_field_type(:text)
-        if solr_field.is_a?(Hash)
-          solr_field.each do |name,value|
-       	    if value.respond_to?(:each_pair)
-              field_type = get_solr_field_type(value[:type]) if value[:type]
-            else
-              field_type = get_solr_field_type(value)
-            end
-            field = "#{name.to_s}_#{field_type}#{suffix}"
-            strings.each_with_index { |s,i| strings[i] = s.gsub(/#{name.to_s}_s#{suffix}/,field) }
-          end
-        end
-      end
-    end
-    strings
-  end
-  
+    
   def tag
     tags.collect { |t| t.name }
   end

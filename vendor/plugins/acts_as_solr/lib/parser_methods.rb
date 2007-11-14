@@ -37,7 +37,7 @@ module ActsAsSolr #:nodoc:
         end
         
         query_options[:field_list] = [field_list, 'score']
-        query = "(#{query.gsub(/ *: */,"_t:")}) #{models}"
+        query = "(#{query.split(/\s/).collect { |qp| qp.sub(/:/, "_t:") }.join(" ")}) #{models}"
         order = options[:order].split(/\s*,\s*/).collect{|e| e.gsub(/\s+/,'_t ').gsub(/\bscore_t\b/, 'score')  }.join(',') if options[:order] 
         query_options[:query] = replace_types([query])[0] # TODO adjust replace_types to work with String or Array  
 
