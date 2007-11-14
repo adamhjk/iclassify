@@ -17,6 +17,7 @@
 
 class AttribsController < ApplicationController
   
+  before_filter :login_required
   before_filter :find_node
   
   # GET /nodes/:node_id/attribs/new

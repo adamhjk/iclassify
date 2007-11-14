@@ -16,6 +16,8 @@
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 class NodesController < ApplicationController
+  before_filter :login_required
+  
   # GET /nodes
   def index
     @nodes = Node.find(:all) 

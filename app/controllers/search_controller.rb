@@ -16,6 +16,8 @@
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 class SearchController < ApplicationController
+  before_filter :login_required
+  
   def index
     @nodes = Node.find_record_by_solr(params[:q]) if params[:q]
     @nodes ||= Array.new

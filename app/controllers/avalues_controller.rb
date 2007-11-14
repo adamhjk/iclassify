@@ -17,7 +17,8 @@
 
 class AvaluesController < ApplicationController
 
- before_filter :find_attrib
+  before_filter :login_required
+  before_filter :find_attrib
  
  # GET /nodes/:node_id/attribs/new
  def new

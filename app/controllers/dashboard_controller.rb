@@ -17,6 +17,8 @@
 
 class DashboardController < ApplicationController
   
+  before_filter :login_required
+  
   # GET /
   # GET /dashboard
   # GET /dashboard.xml

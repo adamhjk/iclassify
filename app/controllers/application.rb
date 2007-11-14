@@ -21,6 +21,8 @@
 class ApplicationController < ActionController::Base
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_iclassify_session_id'
+
+  include AuthenticatedSystem
   
   def populate_tags_and_attribs(params=nil)
     tags = Array.new

@@ -1,8 +1,19 @@
 ActionController::Routing::Routes.draw do |map|
   
-  map.resources :nodes,  :path_prefix => "/rest", :name_prefix => "rest_", :controller => "rest_nodes"
-  map.resources :tags,   :path_prefix => "/rest", :name_prefix => "rest_", :controller => "rest_tags"
-  map.resources :search, :path_prefix => "/rest", :name_prefix => "rest_", :controller => "rest_search"
+  map.resources :nodes,  
+    :path_prefix => "/rest", 
+    :name_prefix => "rest_", 
+    :controller => "rest_nodes"
+ 
+  map.resources :tags,
+    :path_prefix => "/rest", 
+    :name_prefix => "rest_", 
+    :controller => "rest_tags"
+    
+  map.resources :search,
+    :path_prefix => "/rest",
+    :name_prefix => "rest_",
+    :controller => "rest_search"
   
   map.resources :users
   map.resource :session, :controller => 'sessions'  

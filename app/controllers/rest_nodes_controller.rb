@@ -16,6 +16,7 @@
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 class RestNodesController < ApplicationController
+  before_filter :login_required, :only => [ :update, :destroy ]
   
   session :disabled => true
   
