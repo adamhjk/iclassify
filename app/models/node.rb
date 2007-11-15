@@ -35,7 +35,7 @@ class Node < ActiveRecord::Base
   
   def self.find_record_by_solr(q)
     ids = find_id_by_solr(q, :limit => :all)
-    if ids
+    if ids.total > 0
       logger.debug(ids.to_yaml)
       find_by_sql("SELECT id, uuid, description, notes FROM nodes WHERE id IN (#{ids.docs.join(', ')}) ORDER BY description")
     else
