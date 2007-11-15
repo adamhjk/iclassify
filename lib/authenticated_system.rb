@@ -103,7 +103,12 @@ module AuthenticatedSystem
     # Called from #current_user.  Now, attempt to login by basic authentication information.
     def login_from_basic_auth
       username, passwd = get_auth_data
-      self.current_user = User.authenticate(username, passwd) if username && passwd
+      if username =~ /^[[:xdigit:]]{8}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{12}$/
+        self.current_user = Node.authenticate(username, passwd) if username && passwd
+      else
+        self.current_user = User.authenticate(username, passwd) if username && passwd
+      end
+      self.current_user      
     end
 
     # Called from #current_user.  Finaly, attempt to login by an expiring token in the cookie.
