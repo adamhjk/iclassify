@@ -1,4 +1,4 @@
 <%= error_messages_for :tag %>
-<% form_for :tag, :url => tags_url(:node_id => @node.id) do |form| %>
+<% form_for :tag, :url => node_tags_url(:node_id => @node.id) do |form| %>
 <%= render :partial => 'form', :locals => { :node => @node, :form => form }  %>
 <% end %>

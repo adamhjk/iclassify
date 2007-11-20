@@ -1,4 +1,6 @@
 module AuthenticatedSystem
+  UUIDREGEX = /^[[:xdigit:]]{8}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{12}$/
+  
   protected
     # Returns true or false if the user is logged in.
     # Preloads @current_user with the user model if they're logged in.
@@ -14,6 +16,7 @@ module AuthenticatedSystem
     
     # Store the given user in the session.
     def current_user=(new_user)
+      session[:user_type] = (new_user.nil? || new_user.is_a?(Symbol)) ? nil : new_user.class.to_s
       session[:user] = (new_user.nil? || new_user.is_a?(Symbol)) ? nil : new_user.id
       @current_user = new_user
     end
@@ -69,7 +72,7 @@ module AuthenticatedSystem
         accepts.xml do
           headers["Status"]           = "Unauthorized"
           headers["WWW-Authenticate"] = %(Basic realm="Web Password")
-          render :text => "Could't authenticate you", :status => '401 Unauthorized'
+          render :text => "Couldn't authenticate you", :status => '401 Unauthorized'
         end
       end
       false
@@ -97,18 +100,23 @@ module AuthenticatedSystem
 
     # Called from #current_user.  First attempt to login by the user id stored in the session.
     def login_from_session
-      self.current_user = User.find_by_id(session[:user]) if session[:user]
+      if session[:user]
+        if session[:user_type] == 'Node'
+          self.current_user = Node.find_by_id(session[:user])
+        else
+          self.current_user = User.find_by_id(session[:user]) 
+        end
+      end
     end
 
     # Called from #current_user.  Now, attempt to login by basic authentication information.
     def login_from_basic_auth
       username, passwd = get_auth_data
-      if username =~ /^[[:xdigit:]]{8}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{12}$/
+      if username =~ UUIDREGEX
         self.current_user = Node.authenticate(username, passwd) if username && passwd
       else
         self.current_user = User.authenticate(username, passwd) if username && passwd
       end
-      self.current_user      
     end
 
     # Called from #current_user.  Finaly, attempt to login by an expiring token in the cookie.

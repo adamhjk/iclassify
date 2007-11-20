@@ -72,6 +72,10 @@ div.progressBar div.background {
   width: 0%;
 }
 
+table.tablesorter td.quarantined {
+	color: #FF0000;
+}
+
 div#header {
   float: left;
   vertical-align: middle;

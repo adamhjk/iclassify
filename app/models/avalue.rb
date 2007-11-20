@@ -20,12 +20,14 @@ class Avalue < ActiveRecord::Base
   
   validates_presence_of :value, :message => "You must have a value!"
   
-  after_create  :update_solr
-  after_update  :update_solr
-  after_destroy :update_solr
-  after_save    :update_solr
+  # after_create  :update_solr
+  # after_update  :update_solr
+  # after_destroy :update_solr
+  # after_save    :update_solr
+  
+  attr_accessor :bulk_load
   
   def update_solr
-    attrib.node.solr_save
+    attrib.node.solr_save unless self.bulk_load == true
   end
 end

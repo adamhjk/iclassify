@@ -15,7 +15,7 @@
 #  with this program; if not, write to the Free Software Foundation, Inc.,
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-class Tag < ActiveRecord::Base
+class Tag < ActiveRecord::Base  
   has_and_belongs_to_many :nodes
   validates_presence_of :name
   validates_uniqueness_of :name
@@ -23,14 +23,14 @@ class Tag < ActiveRecord::Base
     :with => /\A(\w|\-)+\Z/, 
     :message => "Name must be alphanumeric plus _ and -."
   
-  after_create  :update_solr
-  after_update  :update_solr
-  after_destroy :update_solr
-  after_save    :update_solr
+  # after_create  :update_solr
+  # after_update  :update_solr
+  # after_destroy :update_solr
+  # after_save    :update_solr
   
   def update_solr
     nodes.each do |node|
-      node.solr_save
+      node.solr_save 
     end
   end
   

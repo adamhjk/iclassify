@@ -5,10 +5,14 @@ latte:
   uuid: EB1F9086-4314-431B-A834-B68396BBF4B1
   description: "latte"
   notes: "Coffee is loved around the world"
+  crypted_password: EB1F9086-4314-431B-A834-B68396BBF4B1
+  salt: abc
 
 dosequis:
   id: 2
   uuid: C748F059-EBE8-444A-A346-7F881DD9D1B6
   description: "dosequis"
   notes: "Beer is also loved around the world"
+  crypted_password: C748F059-EBE8-444A-A346-7F881DD9D1B6
+  salt: abc
 

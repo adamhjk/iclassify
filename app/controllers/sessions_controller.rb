@@ -2,14 +2,20 @@
 class SessionsController < ApplicationController
   # Be sure to include AuthenticationSystem in Application Controller instead
   include AuthenticatedSystem
+  include AuthorizedAsUser
 
   # render new.rhtml
   def new
   end
 
   def create
-    self.current_user = User.authenticate(params[:login], params[:password])
-    if logged_in?
+    if params[:login] != UUIDREGEX
+      self.current_user = User.authenticate(params[:login], params[:password])
+    else
+      logger.info("Attempt to log in to the web interface with a Node UUID (#{params[:login]})!")
+      self.current_user = nil
+    end
+    if logged_in? 
       if params[:remember_me] == "1"
         self.current_user.remember_me
         cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }

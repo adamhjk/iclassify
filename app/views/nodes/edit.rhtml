@@ -1,25 +1,25 @@
 
 <div class="section_box">
-    <h1>Editing <%= link_to "#{h @node.description} (#{h @node.uuid})", node_path(@node) %></h1>
+    <h1>Editing <%= link_to "#{h @node.description} (#{h @node.uuid})", node_url(@node) %></h1>
     
     
 <%= error_messages_for :node %>
 
 <div id="node_information" class="fieldset">
-<% form_for(:node, :url => node_path(@node), :html => { :method => :put }) do |f| %>
+<% form_for(:node, :url => node_url(@node), :html => { :method => :put }) do |f| %>
     <%= render :partial => "form", :locals => { :form => f } %>
     <%= submit_tag "Update Node Information" %>
 <% end %>
 </div>
 
 <div id="new_tag_data">
-    <% form_for :tag, :url => tags_url(:node_id => @node) do |form| %>
+    <% form_for :tag, :url => node_tags_url(:node_id => @node) do |form| %>
     <%= render :partial => "/tags/form", :locals => { :node => @node, :current_tags => @node.tags, :tags => Tag.find(:all), :form => form, :legend => "Tags" }%>
     <% end %>
 </div>
 
 <div id="new_attribute_data" class="fieldset">
-    <%= render :partial => "/attribs/form", :locals => { :node => @node, :heading => "Add an Attribute", :url => attribs_url(:node_id => @node) } %>
+    <%= render :partial => "/attribs/form", :locals => { :node => @node, :heading => "Add an Attribute", :url => node_attribs_url(:node_id => @node) } %>
 </div>
 <div id="attributes_list">
     <%= render :partial => "attrib_list", :locals => { :node => @node }%>

@@ -16,8 +16,9 @@
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 class RestTagsController < ApplicationController
+  include AuthorizedAsUser
   before_filter :login_required
-  session :disabled => true
+#  session :disabled => true
   
   # GET /rest/tags.xml
   def index

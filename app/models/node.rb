@@ -16,27 +16,42 @@
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 class Node < ActiveRecord::Base
+  
+  include PasswordEncryption
+  
   UUID_REGEX = /^[[:xdigit:]]{8}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{12}$/
+  
+  attr_accessor :password
+  attr_accessor :skip_solr
+  attr_accessor :from_user
   
   has_many :attribs, :dependent => :destroy
   has_and_belongs_to_many :tags
   
-  validates_presence_of :uuid
+  validates_presence_of   :password, :if => :password_required?
+  validates_presence_of   :uuid
   validates_uniqueness_of :uuid
   
   validates_format_of :uuid,
                       :with    => UUID_REGEX,
                       :message => "Must be a valid UUID"
                       
+  before_save :encrypt_password
+  before_save :update_quarantined
+  
   # acts_as_ferret(:fields => [ :uuid, :notes, :description, :tag ], :remote =>  true )
   
   acts_as_solr(:fields => [ {:uuid => :text}, {:notes => :text}, {:description => :text}, {:tag => :text} ], 
                :auto_commit => true)
   
+  def self.authenticate(username, password)
+    node = find_by_uuid(username) # need to get the salt
+    node && node.authenticated?(password) ? node : nil
+  end
+        
   def self.find_record_by_solr(q)
     ids = find_id_by_solr(q, :limit => :all)
     if ids
-      logger.debug(ids.to_yaml)
       find_by_sql("SELECT id, uuid, description, notes FROM nodes WHERE id IN (#{ids.docs.join(', ')}) ORDER BY description")
     else
       logger.debug("returning nothing")
@@ -46,29 +61,35 @@ class Node < ActiveRecord::Base
   
   # saves to the Solr index
   def solr_save
-    return true unless configuration[:if] 
-    if evaluate_condition(configuration[:if], self) 
-      logger.debug "solr_save: #{self.class.name} : #{record_id(self)}"
-      this_doc = to_solr_doc
-      field_type = configuration[:facets] && configuration[:facets].include?(field) ? :facet : :text
-      field_boost= solr_configuration[:default_boost]
-      suffix = get_solr_field_type(field_type)
-      attribs.each do |attrib|
-        if attrib.name != "id"
-          attrib.avalues.collect { |av| av.value }.each do |v|
-            v = set_value_if_nil(suffix) if v.to_s == ""
-            logger.debug("adding field #{attrib.name}_#{suffix}: #{v.to_s}")
-            field = Solr::Field.new("#{attrib.name}_#{suffix}" => ERB::Util.html_escape(v.to_s))
-            this_doc << field 
+    if self.skip_solr == true
+      logger.debug("Skipping solr_save")
+    else
+      if self.quarantined == false 
+        return true unless configuration[:if] 
+        if evaluate_condition(configuration[:if], self) 
+          logger.debug "solr_save: #{self.class.name} : #{record_id(self)}"
+          this_doc = to_solr_doc
+          field_type = configuration[:facets] && configuration[:facets].include?(field) ? :facet : :text
+          field_boost= solr_configuration[:default_boost]
+          suffix = get_solr_field_type(field_type)
+          attribs(:include => :avalues).each do |attrib|
+            if attrib.name != "id"
+              attrib.avalues.collect { |av| av.value }.each do |v|
+                v = set_value_if_nil(suffix) if v.to_s == ""
+                logger.debug("adding field #{attrib.name}_#{suffix}: #{v.to_s}")
+                field = Solr::Field.new("#{attrib.name}_#{suffix}" => ERB::Util.html_escape(v.to_s))
+                this_doc << field 
+              end
+            end
           end
+          logger.debug(this_doc.to_xml)
+          solr_add(this_doc)
+          solr_commit if configuration[:auto_commit]
+          true
+        else
+          solr_destroy
         end
       end
-      logger.debug(this_doc.to_xml)
-      solr_add(this_doc)
-      solr_commit if configuration[:auto_commit]
-      true
-    else
-      solr_destroy
     end
   end
     
@@ -104,9 +125,10 @@ class Node < ActiveRecord::Base
     return node, node_unique_field
   end
   
-  def self.bulk_tag(node_hash, tags)
+  def self.bulk_tag(node_hash, tags, from_user=false)
     node_hash.each do |node_id, value|
       node = find(node_id.to_i)
+      node.from_user = true if from_user
       node.tags = tags
       node.save
     end
@@ -145,7 +167,7 @@ class Node < ActiveRecord::Base
       self.tags = Tag.create_missing_tags(tag_array)
     end
     if attrib_array
-      attribs.each do |attrib|
+      attribs(:include => :avalues).each do |attrib|
         attribs.delete(attrib) unless attrib_array.include?({'name' => attrib.name })
       end
       self.attribs = Attrib.create_missing_attribs(self, attrib_array, { :delete => true })
@@ -153,52 +175,11 @@ class Node < ActiveRecord::Base
     self.save
   end
   
- # def parse_query(query=nil, options={}, models=nil)
- #   valid_options = [:offset, :limit, :facets, :models, :results_format, :order, :scores, :operator]
- #   query_options = {}
- #   return if query.nil?
- #   raise "Invalid parameters: #{(options.keys - valid_options).join(',')}" unless (options.keys - valid_options).empty?
- #   begin
- #     Deprecation.validate_query(options)
- #     query_options[:start] = options[:offset]
- #     query_options[:rows] = options[:limit]
- #     query_options[:operator] = options[:operator]
- #     
- #     # first steps on the facet parameter processing
- #     if options[:facets]
- #       query_options[:facets] = {}
- #       query_options[:facets][:limit] = -1  # TODO: make this configurable
- #       query_options[:facets][:sort] = :count if options[:facets][:sort]
- #       query_options[:facets][:mincount] = 0
- #       query_options[:facets][:mincount] = 1 if options[:facets][:zeros] == false
- #       query_options[:facets][:fields] = options[:facets][:fields].collect{|k| "#{k}_facet"} if options[:facets][:fields]
- #       query_options[:filter_queries] = replace_types(options[:facets][:browse].collect{|k| "#{k.sub!(/ *: */,"_facet:")}"}) if options[:facets][:browse]
- #       query_options[:facets][:queries] = replace_types(options[:facets][:query].collect{|k| "#{k.sub!(/ *: */,"_t:")}"}) if options[:facets][:query]
- #     end
- #     
- #     if models.nil?
- #       # TODO: use a filter query for type, allowing Solr to cache it individually
- #       models = "AND #{solr_configuration[:type_field]}:#{self.name}"
- #       field_list = solr_configuration[:primary_key_field]
- #     else
- #       field_list = "id"
- #     end
- #     
- #     query_options[:field_list] = [field_list, 'score']
- #     query = "(#{query.gsub(/ *: */,"_t:")}) #{models}"
- #     order = options[:order].split(/\s*,\s*/).collect{|e| e.gsub(/\s+/,'_t ').gsub(/\bscore_t\b/, 'score')  }.join(',') if options[:order] 
- #     query_options[:query] = replace_types([query])[0] # TODO adjust replace_types to work with String or Array  
- #
- #     if options[:order]
- #       # TODO: set the sort parameter instead of the old ;order. style.
- #       query_options[:query] << ';' << replace_types([order], false)[0]
- #     end
- #            
- #     ActsAsSolr::Post.execute(Solr::Request::Standard.new(query_options))
- #   rescue
- #     raise "There was a problem executing your search: #{$!}"
- #   end            
- # end
+  def encrypt_password
+    return if password.blank?
+    self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{uuid}--") if new_record?
+    self.crypted_password = encrypt(password)
+  end
   
   # Serializes all the nodes in the database                
   def self.rest_serialize_all
@@ -230,7 +211,18 @@ class Node < ActiveRecord::Base
       ahash[:values] = attrib.avalues.collect{ |av| av.value }
       rest_hash[:attribs] << ahash
     end
-    logger.debug("Rest: #{rest_hash.to_yaml}")
     rest_hash
   end
+  
+  protected
+    def update_quarantined
+      if from_user == true && quarantined == true
+        logger.debug("Turning off quarantine!")
+        self.quarantined = false
+        self.save
+      else
+        logger.error("from_user is #{from_user} and quarantined is #{quarantined}")
+      end
+    end
+  
 end

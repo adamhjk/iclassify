@@ -16,6 +16,7 @@
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 class SearchController < ApplicationController
+  include AuthorizedAsUser
   before_filter :login_required
   
   def index

@@ -17,6 +17,8 @@
 
 class AvaluesController < ApplicationController
 
+  include AuthorizedAsUser
+
   before_filter :login_required
   before_filter :find_attrib
  
@@ -40,6 +42,7 @@ class AvaluesController < ApplicationController
    @avalue = Avalue.new(params[:avalue])
    
    if (@attrib.avalues << @avalue)
+     @avalue.update_solr
      flash["attrib_edit_#{@attrib.id}_notice".to_sym] = "Added a value"
      if request.xhr?
        render :partial => "nodes/attrib", :locals => { :attrib => @attrib }
@@ -55,6 +58,7 @@ class AvaluesController < ApplicationController
  def update
    @avalue = @attrib.avalues.find(params[:id])
    if @avalue.update_attributes(params[:avalue])
+     @avalue.update_solr
      flash["attrib_edit_#{@attrib.id}_notice".to_sym] = "Changed a value"
      if request.xhr?
        render :partial => "nodes/attrib", :locals => { :attrib => @attrib }
@@ -69,6 +73,7 @@ class AvaluesController < ApplicationController
  # DELETE /nodes/:node_id/attribs/1
  def destroy
    @attrib.avalues.find(params[:id]).destroy
+   @node.solr_save
    flash["attrib_edit_#{@attrib.id}_notice".to_sym] = "Removed a value."
    if request.xhr?
      render :partial => "nodes/attrib", :locals => { :attrib => @attrib }
@@ -82,8 +87,9 @@ class AvaluesController < ApplicationController
      @node_id = params[:node_id]
      redirect_to nodes_url unless @node_id
      @node = Node.find(@node_id)
+     @node.from_user = true
      @attrib_id = params[:attrib_id]
-     redirect_to attribs_url unless @attrib_id
+     redirect_to node_attribs_url unless @attrib_id
      @attrib = @node.attribs.find(@attrib_id)
    end
 end

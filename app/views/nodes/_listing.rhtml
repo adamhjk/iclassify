@@ -21,7 +21,7 @@
         <% end %>
         <td>
         <%= link_to("#{h node.description}", node_path(node)) %></td>
-        <td><%= h node.uuid %></td>
+        <td class="<%= node.quarantined ? "quarantined" : "" %>"><%= h node.uuid %></td>
         <td>
             <%= edit_button("Edit", edit_node_path(node))%>
             <%= remove_button("Delete", node_path(node), "Delete node #{h node.description}?")%>            

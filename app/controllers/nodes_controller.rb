@@ -16,6 +16,8 @@
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 class NodesController < ApplicationController
+  include AuthorizedAsUser
+  
   before_filter :login_required
   
   # GET /nodes
@@ -43,7 +45,6 @@ class NodesController < ApplicationController
   def create
     tags, attribs = populate_tags_and_attribs(params)
     @node = Node.new(params[:node])
-
     respond_to do |format|
       if @node.save_with_tags_and_attribs(tags, attribs)
         flash[:notice] = 'Node was successfully created.'
@@ -57,6 +58,7 @@ class NodesController < ApplicationController
   # PUT /nodes/1
   def update
     @node = Node.find(params[:id])
+    @node.from_user = true
     if params[:node].has_key?(:tags) && params[:node].has_key?(:attribs)
       tags, attribs = populate_tags_and_attribs(params)
       if @node.update_with_tags_and_attribs(params[:node], tags, attribs)

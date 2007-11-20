@@ -39,4 +39,6 @@ class ApplicationController < ActionController::Base
     logger.debug("Attribs: #{attribs.to_yaml}")
     return tags, attribs
   end
+  
+
 end

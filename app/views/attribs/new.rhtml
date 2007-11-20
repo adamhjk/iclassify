@@ -1,7 +1,7 @@
 <fieldset>
   <legend>Add an Attribute</legend>
 <%= error_messages_for :attrib %>
-<% form_for :attrib, :url => attribs_url(:node_id => @node.id) do |form| %>
+<% form_for :attrib, :url => node_attribs_url(:node_id => @node.id) do |form| %>
 <%= render :partial => 'form', :locals => { :node => @node, :form => form }  %>
 <%= submit_tag "Add Attribute" %>
 

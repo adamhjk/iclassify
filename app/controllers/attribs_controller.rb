@@ -17,6 +17,8 @@
 
 class AttribsController < ApplicationController
   
+  include AuthorizedAsUser
+  
   before_filter :login_required
   before_filter :find_node
   
@@ -41,6 +43,7 @@ class AttribsController < ApplicationController
     @attrib = Attrib.new(params[:attrib])
     
     if (@node.attribs << @attrib)
+      @node.solr_save
       flash[:attribute_notice] = "Added attribute #{@attrib.name}"
       if request.xhr?
         render :partial => "/nodes/attrib_list", :locals => {
@@ -59,6 +62,7 @@ class AttribsController < ApplicationController
   def update
     @attrib = @node.attribs.find(params[:id])
     if @attrib.update_attributes(params[:attrib])
+      @attrib.update_solr
       redirect_to node_url(@node)
     else
       render :action => :edit
@@ -69,6 +73,7 @@ class AttribsController < ApplicationController
   # DELETE /nodes/:node_id/attribs/1.xml
   def destroy
     @attrib = @node.attribs.find(params[:id]).destroy
+    @node.solr_save
     flash[:attribute_notice] = "Removed attribute #{@attrib.name}"
     if request.xhr?
       render :partial => "/nodes/attrib_list", :locals => { :node => @node }
@@ -82,5 +87,6 @@ class AttribsController < ApplicationController
       @node_id = params[:node_id]
       redirect_to nodes_url unless @node_id
       @node = Node.find(@node_id)
+      @node.from_user = true
     end
 end

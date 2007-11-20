@@ -1,6 +1,7 @@
 class RestSearchController < ApplicationController
-  session :disabled => true
+  include AuthorizedAsUser
   
+  # session :disabled => true
   before_filter :login_required
   
   def index

@@ -16,13 +16,14 @@
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 class RestNodesController < ApplicationController
-  before_filter :login_required
+  include AuthorizedAsUser
+  before_filter :login_required, :only => [ :index, :destroy ]
   
-  session :disabled => true
+#  session :disabled => true
   
   # GET /rest/nodes.xml
   def index
-    @nodes = Node.find(:all) 
+    @nodes = Node.find(:all, :include => [ :tags, :attribs ]) 
     
     respond_to do |format|
       format.xml { render :layout => false }
@@ -32,9 +33,18 @@ class RestNodesController < ApplicationController
   # GET /rest/nodes/1.xml
   def show
     @node, @node_unique_field = Node.find_by_unique(params[:id])
-
-    respond_to do |format|
-      format.xml  { render :layout => false, :template => "rest_nodes/show.rxml" }
+    if check_node_or_user?(@node)
+      respond_to do |format|
+        format.xml  { render :layout => false, :template => "rest_nodes/show.rxml" }
+      end
+    else
+      if @node
+        headers["Status"] = "Unauthorized"
+        render :text => "You are neither a user or UUID #{params[:id]}", :status => '401 Unauthorized'
+      else
+        headers["Status"] = "Not Found"
+        render :text => "Cannot find Node with #{params[:id]}", :status => '404 Not Found'
+      end
     end
   end
 
@@ -42,7 +52,7 @@ class RestNodesController < ApplicationController
   def create
     tags, attribs = populate_tags_and_attribs(params)
     @node = Node.new(params[:node])
-
+    @node.quarantined = true unless authorized?
     respond_to do |format|
       if @node.save_with_tags_and_attribs(tags, attribs)
         format.xml  { head :created, :location => node_url(@node) }
@@ -55,33 +65,52 @@ class RestNodesController < ApplicationController
   # PUT /rest/nodes/1.xml
   def update
     @node, @node_unique_field = Node.find_by_unique(params[:id])
-
-    respond_to do |format|
-      if params[:node].has_key?(:tags) && params[:node].has_key?(:attribs)
-        tags, attribs = populate_tags_and_attribs(params)
-        if @node.update_with_tags_and_attribs(params[:node], tags, attribs)
-          format.xml  { head :ok }
+    if check_node_or_user?(@node)
+      # You can't take yourself out of quarantine with a parameter
+      params[:node].delete(:quarantined) if params[:node].has_key?(:quarantined)
+      @node.from_user = true if authorized?
+      respond_to do |format|
+        if params[:node].has_key?(:tags) && params[:node].has_key?(:attribs)
+          tags, attribs = populate_tags_and_attribs(params)
+          if @node.update_with_tags_and_attribs(params[:node], tags, attribs)
+            format.xml  { head :ok }
+          else
+            format.xml  { render :xml => @node.errors.to_xml }
+          end
         else
-          format.xml  { render :xml => @node.errors.to_xml }
-        end
-      else
-        if @node.update_attributes(params[:node])
-          format.xml  { head :ok }
-        else
-          format.xml  { render :xml => @node.errors.to_xml }
+          if @node.update_attributes(params[:node])
+            format.xml  { head :ok }
+          else
+            format.xml  { render :xml => @node.errors.to_xml }
+          end
         end
       end
+    else
+      headers["Status"] = "Unauthorized"
+      render :text => "You are neither a user or UUID #{params[:node][:uuid]}", :status => '401 Unauthorized'   
     end
   end
 
   # DELETE /rest/nodes/1.xml
   def destroy
     @node, node_unique_field = Node.find_by_unique(params[:id])
-    @node.destroy
+    if check_node_or_user?(@node)
+      @node.destroy
 
-    respond_to do |format|
-      format.xml  { head :ok }
+      respond_to do |format|
+        format.xml  { head :ok }
+      end
+    else
+      headers["Status"] = "Unauthorized"
+      render :text => "You are neither a user or UUID #{params[:id]}", :status => '401 Unauthorized'
     end
   end
 
+  protected
+    def check_node_or_user?(tocheck)
+      return true if current_user.is_a?(User)
+      return true if current_user.is_a?(Node) && current_user.id == tocheck.id
+      return false
+    end
+    
 end

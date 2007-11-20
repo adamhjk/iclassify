@@ -6,12 +6,13 @@ require 'digest/sha1'
 
 module IClassify
   class Node
-    attr_accessor :tags, :uuid, :description, :notes, :attribs, :node_id
+    attr_accessor :tags, :uuid, :description, :notes, :attribs, :node_id, :password
     
     def initialize(xml=nil)
       from_xml(xml) if xml
       @tags ||= Array.new
       @attribs ||= Array.new
+      @password = nil
     end
     
     def to_xml
@@ -19,6 +20,7 @@ module IClassify
       output = xml.node do
         xml.id(@node_id) if @node_id
         xml.uuid(@uuid)
+        xml.password(@password) if @password
         xml.description(@description)
         xml.notes(@notes)
         xml.tags do
