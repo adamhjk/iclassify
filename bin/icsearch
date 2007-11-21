@@ -26,7 +26,7 @@ require 'optparse'
 require 'highline/import'
 
 config = {
-  :server => 'http://iclassify',
+  :server => 'https://iclassify',
   :user   => ENV.has_key?('USER') ? ENV['USER'] : nil,
   :passwd => nil
 }
