@@ -52,7 +52,7 @@ class Node < ActiveRecord::Base
   def self.find_record_by_solr(q)
     ids = find_id_by_solr(q, :limit => :all)
     if ids.total > 0
-      find_by_sql("SELECT id, uuid, description, notes FROM nodes WHERE id IN (#{ids.docs.join(', ')}) ORDER BY description")
+      find_by_sql("SELECT id, uuid, description, quarantined notes FROM nodes WHERE id IN (#{ids.docs.join(', ')}) ORDER BY description")
     else
       logger.debug("Returning nothing")
       Array.new
