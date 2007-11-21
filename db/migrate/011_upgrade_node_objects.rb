@@ -12,7 +12,7 @@ class UpgradeNodeObjects < ActiveRecord::Migration
       node_uuid_filename = File.join(Dir.tmpdir, "#{node.description}.uuid")
       puts "New UUID File: #{node_uuid_filename}"
       File.open(node_uuid_filename, 'w') do |uuid_file|
-        uuid_file.puts("#{node.uuid}!#{node.crypted_password}")
+        uuid_file.puts("#{node.uuid}!#{newpass}")
       end
     end
   end
