@@ -1,0 +1,27 @@
+<div class="section_box">
+    <h2>Users</h2><%= add_button("Add new User", new_user_path) %>
+    <table id="user_list" class="tablesorter">
+        <thead>
+            <tr>
+                <th>Login</th>
+                <th>Read Write Access?</th>
+                <th> </th>
+            </tr>
+        </thead>
+        <tbody>
+        <% @users.each do |user| -%>
+        <tr>
+            <td>
+            <%= h user.login %>
+            </td>
+            <td>
+                <%= user.readwrite ? "Yes" : "No" %>
+            </td>
+            <td>
+                <%= edit_button("Edit", edit_user_path(user))%>
+                <%= remove_button("Delete", user_path(user), "Delete user #{h user.login}?")%>            
+            </tr>
+        <% end -%>
+        </tbody>
+    </table>
+</div>

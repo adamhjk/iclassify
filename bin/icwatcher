@@ -27,7 +27,7 @@ require 'tempfile'
 require 'open3'
 
 config = {
-  :server    => 'http://iclassify',
+  :server    => 'https://iclassify',
   :uuidfile  => File.dirname(__FILE__) + '/../icagent.uuid',
   :tmpfile   => File.join(Dir::tmpdir, "icwatcher.digest"),
 }

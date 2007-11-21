@@ -16,8 +16,10 @@
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 class TagsController < ApplicationController
+  include AuthorizedAsUser
   
   before_filter :find_node
+  before_filter :can_write, :except => [ "index", "show", "all_index", "all_show" ]
   
   # GET /nodes/:node_id/tags/new
   def new
@@ -79,7 +81,7 @@ class TagsController < ApplicationController
       result = @node.save
     end
     if result
-      redirect_to node_url(@node)
+      redirect_to node_path(@node)
     else
       render :action => :new
     end
@@ -112,7 +114,8 @@ class TagsController < ApplicationController
   def update
     @tag = @node.tags.find(params[:id])
     if @tag.update_attributes(params[:tag])
-      redirect_to node_url(@node)
+      @node.solr_save
+      redirect_to node_path(@node)
     else
       render :action => :edit
     end
@@ -124,6 +127,7 @@ class TagsController < ApplicationController
     @tag = Tag.find(params[:id])
     @tagged_nodes = get_tagged_nodes()
     if @tag.update_attributes(params[:tag])
+      @tag.update_solr
       redirect_to url_for(:controller => "tags", :action => "all_show", :id => @tag.id)
     else
       render :action => :all_edit
@@ -134,13 +138,15 @@ class TagsController < ApplicationController
   # DELETE /nodes/:node_id/tags/1.xml
   def destroy
     @node.tags.delete(@node.tags.find(params[:id]))
-    redirect_to node_url(@node)
+    @node.solr_save
+    redirect_to node_path(@node)
   end
   
   # DELETE /tags/:tag_id
   # DELETE /tags/:tag_id.xml
   def all_destroy
-    Tag.find(params[:id]).destroy
+    dtag = Tag.find(params[:id]).destroy
+    dtag.update_solr
     if request.xhr? 
       render(:partial => "/tags/tag_listing")
     else
@@ -193,8 +199,9 @@ class TagsController < ApplicationController
     def find_node
       if params[:node_id]
         @node_id = params[:node_id]
-        redirect_to nodes_url unless @node_id
+        redirect_to nodes_path unless @node_id
         @node = Node.find(@node_id)
+        @node.from_user = true
       end
     end
     

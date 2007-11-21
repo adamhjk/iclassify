@@ -10,7 +10,6 @@ describe Node do
   it "should be invalid without a uuid" do
     @node.should_not be_valid
     @node.errors.on(:uuid).should eql([ "Must be a valid UUID", "can't be blank" ])
-
   end
   
   it "should be invalid with a bad uuid" do
@@ -19,8 +18,11 @@ describe Node do
     @node.errors.on(:uuid).should eql("Must be a valid UUID")
   end
   
-  it "should be valid with a proper uuid" do
-    @node.attributes = { :uuid => 'F7028382-B40F-4630-9E8C-A88782D6EDCD' }
+  it "should be valid with a proper uuid and password" do
+    @node.attributes = { 
+      :uuid => 'F7028382-B40F-4630-9E8C-A88782D6EDCD',
+      :password => 'foo'
+    }
     @node.should be_valid
   end
   
@@ -28,10 +30,6 @@ describe Node do
     @node.uuid = nodes(:latte).uuid
     @node.should_not be_valid
     @node.errors.on(:uuid).should eql("has already been taken")
-  end
-  
-  it "should turn itself into a ferret document" do
-    nodes(:latte).to_doc.should be_a_kind_of(Ferret::Document)
   end
   
   it "should serialize itself as a hash for rest" do

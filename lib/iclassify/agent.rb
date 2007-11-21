@@ -5,23 +5,29 @@ module IClassify
   class Agent
     attr_accessor :node
     attr_accessor :uuid
+    attr_accessor :password
     
     #
     # Create a new Agent.  Takes a path to a file to either read or drop
     # a UUID, and a server URL.
     #
     def initialize(uuidfile="/etc/icagent/icagent.uuid", server_url="http://localhost:3000")
-      @client = IClassify::Client.new(server_url)
+      @uuid = nil
+      @password = nil
       if File.exists?(uuidfile)
         IO.foreach(uuidfile) do |line|
-          @uuid = line.chomp!
+          @uuid, @password = line.chomp.split("!")
+        end
+        unless @password
+          @password = random_password(30)
+          write_uuidfile(uuidfile)
         end
       else
         @uuid = UUID.random_create
-        File.open(uuidfile, "w") do |file|
-          file.puts @uuid
-        end
+        @password = random_password(30)
+        write_uuidfile(uuidfile)
       end
+      @client = IClassify::Client.new(server_url, @uuid, @password)
     end
     
     #
@@ -30,11 +36,16 @@ module IClassify
     def load
       begin 
         @node = @client.get_node(@uuid)
-      rescue Net::HTTPFatalError
-        @node = IClassify::Node.new()
-        @node.description = "New Node"
-        @node.tags << "unclassified"
-        @node.uuid = @uuid
+      rescue Net::HTTPServerException => e
+        if e.to_s == '404 "Not Found"'
+          @node = IClassify::Node.new()
+          @node.description = "New Node"
+          @node.tags << "unclassified"
+          @node.password = @password
+          @node.uuid = @uuid
+        else
+          throw(e)
+        end
       end
     end
     
@@ -103,5 +114,19 @@ module IClassify
     def run_script(scriptfile)
       eval(IO.read(scriptfile))
     end
+    
+    protected
+      def random_password(len)
+        chars = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
+        newpass = ""
+        1.upto(len) { |i| newpass << chars[rand(chars.size-1)] }
+        newpass
+      end 
+      
+      def write_uuidfile(uuidfile)
+        File.open(uuidfile, "w") do |file|
+          file.puts "#{@uuid}!#{@password}"
+        end
+      end
   end
 end

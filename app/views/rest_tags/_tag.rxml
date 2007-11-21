@@ -1,10 +1,10 @@
 xml = xml_instance
-xml.tag(:link => rest_tag_url(:id => tag_unique_field)) do
+xml.tag(:link => rest_tag_path(:id => tag_unique_field)) do
   xml.id(tag[:id])
   xml.name(tag[:name])
   xml.nodes do
     tag[:nodes].each do |node|
-      xml.node(:link => rest_node_url(:id => node[:id])) do
+      xml.node(:link => rest_node_path(:id => node[:id])) do
         xml.id(node[:id])
         xml.uuid(node[:uuid])
         xml.description(node[:description])

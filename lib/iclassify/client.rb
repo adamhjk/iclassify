@@ -8,9 +8,11 @@ module IClassify
   class Client 
      UUID_REGEX = /^[[:xdigit:]]{8}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{4}[:-][[:xdigit:]]{12}$/
   
-    def initialize(service_url)
+    def initialize(service_url, username, password)
       service_url = "#{service_url}/rest" unless service_url =~ /rest$/
       @url = URI.parse(service_url)
+      @username = username
+      @password = password
     end
   
     def make_url(method, params)
@@ -71,12 +73,30 @@ module IClassify
       
       def run_request(method, url, data=false)
         http = Net::HTTP.new(url.host, url.port)
+        if url.scheme == "https"
+          http.use_ssl = true 
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        end
         http.read_timeout = 60
         headers = { 
           'Accept' => 'application/xml',
           'Content-Type' => 'application/xml'
         }
-        res = http.send_request(method, url.path, data, headers)
+        req = nil
+        case method
+        when :GET
+          req = Net::HTTP::Get.new(url.path, headers)
+        when :POST
+          req = Net::HTTP::Post.new(url.path, headers)
+          req.body = data if data
+        when :PUT
+          req = Net::HTTP::Put.new(url.path, headers)
+          req.body = data if data
+        when :DELETE
+          req = Net::HTTP::Delete.new(url.path, headers)
+        end
+        req.basic_auth(@username, @password)
+        res = http.request(req)
         case res
         when Net::HTTPSuccess
           res.body

@@ -16,16 +16,17 @@
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 class Attrib < ActiveRecord::Base
+  
   belongs_to :node
   has_many :avalues, :dependent => :destroy
   
   validates_presence_of :name, :message => "Must have a name"
   
-  after_create  :update_solr
-  after_update  :update_solr
-  after_destroy :update_solr
-  after_save    :update_solr
-  
+  # after_create  :update_solr
+  # after_update  :update_solr
+  # after_destroy :update_solr
+  # after_save    :update_solr
+    
   def self.get_all_names
     find(:all, :select => "name", :group => "name").collect { |a| a.name }
   end
@@ -35,7 +36,7 @@ class Attrib < ActiveRecord::Base
     attribs.each do |attrib_hash|
       attrib = nil
       if node.id       
-        attrib = Attrib.find(:first, :conditions => [ "node_id = ? and name = ?", node.id, attrib_hash['name'] ]) 
+        attrib = Attrib.find(:first, :conditions => [ "node_id = ? and name = ?", node.id, attrib_hash['name'] ], :include => :avalues) 
         unless attrib
           attrib = node.attribs.new(
              :name => attrib_hash['name']
@@ -51,21 +52,17 @@ class Attrib < ActiveRecord::Base
           attrib.avalues << attrib.avalues.new(:value => v)
         end
       end
-      logger.debug("Attrib dump: #{attrib.to_yaml}")
       if options.has_key?(:delete) && options[:delete]
-        logger.debug("Deleting values that should not be")
         attrib.avalues.each do |av|
-          logger.debug("Deleting value #{av.value} unless #{attrib_hash['values']['value'].include?(av.value)}")
           av.destroy unless attrib_hash['values']['value'].include?(av.value)
         end
       end
-      logger.debug(" #{attrib.to_yaml}")
       attrib_array << attrib
     end
     attrib_array
   end
       
   def update_solr
-    node.solr_save
+    node.solr_save 
   end
 end

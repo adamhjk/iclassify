@@ -17,6 +17,12 @@
 
 class DashboardController < ApplicationController
   
+  include AuthorizedAsUser
+  
+  before_filter :login_required
+  before_filter :can_write, :except => [ "index" ]
+  
+  
   # GET /
   # GET /dashboard
   # GET /dashboard.xml
@@ -31,7 +37,7 @@ class DashboardController < ApplicationController
     if params[:tag_nodes] && params[:tag_list]
       tag_nodes = params[:tag_nodes]
       tags = Tag.create_missing_tags(params[:tag_list].split(" "))
-      Node.bulk_tag(tag_nodes, tags)
+      Node.bulk_tag(tag_nodes, tags, true)
       flash[:bulk_tags_notice] = "Nodes have been updated."
       redirect_to(url_for(:controller => "dashboard", :action => "index")) unless request.xhr?
       @tags = Tag.find(:all)
@@ -63,7 +69,7 @@ class DashboardController < ApplicationController
   private
   
     def get_unclassified_nodes
-      uctag = Tag.find_by_name("unclassified")
+      uctag = Tag.find_by_name("unclassified", :include => :nodes)
       uctag ? uctag.nodes : Array.new
     end
 end

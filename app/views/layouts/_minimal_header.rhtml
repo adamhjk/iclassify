@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>iClassify</title>
+  <%= stylesheet_link_tag 'iclassify' %>
+  <%= stylesheet_link_tag 'tablesorter' %>
+  <%= javascript_include_tag "jquery-1.2.1.pack.js" %>
+  <%= javascript_include_tag "autocomplete.js" %>
+  <%= javascript_include_tag "jquery.form.js" %>
+  <%= javascript_include_tag "jquery.livequery.min.js" %>
+  <%= javascript_include_tag "jquery.tablesorter.pack.js" %>
+  <%= javascript_include_tag "jquery.tablesorter.pager.js" %>
+  <%= javascript_include_tag "jquery.dimensions.pack.js"%>
+  <%= javascript_include_tag "iclassify.js" %>
+</head>
+<body>
+<div id="header">
+    <div id="logo">
+        <h1><%= link_to 'iClassify', url_for(:controller => 'dashboard', :action => 'index') %></h1>
+    </div>
+</div>
+
+
+

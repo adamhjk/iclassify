@@ -16,6 +16,11 @@
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 class NodesController < ApplicationController
+  include AuthorizedAsUser
+  
+  before_filter :login_required
+  before_filter :can_write, :except => [ "index", "show", "autocomplete" ]
+  
   # GET /nodes
   def index
     @nodes = Node.find(:all) 
@@ -41,11 +46,10 @@ class NodesController < ApplicationController
   def create
     tags, attribs = populate_tags_and_attribs(params)
     @node = Node.new(params[:node])
-
     respond_to do |format|
       if @node.save_with_tags_and_attribs(tags, attribs)
         flash[:notice] = 'Node was successfully created.'
-        redirect_to node_url(@node)
+        redirect_to node_path(@node)
       else
         render :action => "new"
       end
@@ -55,18 +59,19 @@ class NodesController < ApplicationController
   # PUT /nodes/1
   def update
     @node = Node.find(params[:id])
+    @node.from_user = true
     if params[:node].has_key?(:tags) && params[:node].has_key?(:attribs)
       tags, attribs = populate_tags_and_attribs(params)
       if @node.update_with_tags_and_attribs(params[:node], tags, attribs)
         flash[:notice] = 'Node was successfully updated.'
-        redirect_to node_url(@node)
+        redirect_to node_path(@node)
       else
         render :action => "edit"
       end
     else
       if @node.update_attributes(params[:node])
         flash[:notice] = 'Node was successfully updated.'
-        redirect_to node_url(@node)
+        redirect_to node_path(@node)
       else
         render :action => "edit"
       end
@@ -77,13 +82,13 @@ class NodesController < ApplicationController
   def destroy
     @node = Node.find(params[:id])
     @node.destroy
-    redirect_to nodes_url
+    redirect_to nodes_path
   end
   
   def show_uuid
     @node = Node.find_by_uuid(params[:uuid])
     raise "Cannot find node" unless @node
-    redirect_to node_url(@node) 
+    redirect_to node_path(@node) 
   end
   
   def update_uuid

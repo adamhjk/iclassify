@@ -1,14 +1,10 @@
-* Allow for deleting a tag completely
 * Write real tests.  It's shameful, really.
 * Create installer with rails-app-installer
 * Create iclassify and icagent rubygems
 * Create puppet recipies to install iclassify and icagent
 * Internals documentation
 * Document using IClassify::client from within puppet templates
-* Add copious amounts of spinner.gif during ajax calls.
 * Document building icagent recipies
 * Allow icsearch to suppress UUID output
 * Allow for different changetypes on calls to /nodes (merge, replace) API
 * Allow for calls to specific attribs and tags via the API
-* Support for getting node by hostname 
-  (eg. usefullt for wget http://somedomain.com:3000/nodes/mynode)

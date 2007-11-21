@@ -54,18 +54,6 @@ describe TagsController do
     end
   end
   
-  it "should render tags/all_index.rxml on GET to /tags" do
-    get :all_index, :format => 'xml'
-    response.should render_template("tags/all_index.rxml")
-  end
-  
-  it "should have a tag element for each tag in /tags.xml" do
-    get :all_index, :format => 'xml'
-    @tags.each do |t|
-      response.should have_tag("tag[id=#{t.id}]")
-    end
-  end
-  
   it "should return /tags/id on all_show" do
     route_for(:controller => "tags",
       :action => "all_show", 

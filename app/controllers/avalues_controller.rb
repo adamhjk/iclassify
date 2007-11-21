@@ -17,7 +17,11 @@
 
 class AvaluesController < ApplicationController
 
- before_filter :find_attrib
+  include AuthorizedAsUser
+
+  before_filter :login_required
+  before_filter :can_write, :except => [ "index", "show" ]
+  before_filter :find_attrib
  
  # GET /nodes/:node_id/attribs/new
  def new
@@ -39,11 +43,12 @@ class AvaluesController < ApplicationController
    @avalue = Avalue.new(params[:avalue])
    
    if (@attrib.avalues << @avalue)
+     @avalue.update_solr
      flash["attrib_edit_#{@attrib.id}_notice".to_sym] = "Added a value"
      if request.xhr?
        render :partial => "nodes/attrib", :locals => { :attrib => @attrib }
      else
-       redirect_to node_url(@node)
+       redirect_to node_path(@node)
      end
    else
      render :action => :new
@@ -54,11 +59,12 @@ class AvaluesController < ApplicationController
  def update
    @avalue = @attrib.avalues.find(params[:id])
    if @avalue.update_attributes(params[:avalue])
+     @avalue.update_solr
      flash["attrib_edit_#{@attrib.id}_notice".to_sym] = "Changed a value"
      if request.xhr?
        render :partial => "nodes/attrib", :locals => { :attrib => @attrib }
      else
-       redirect_to node_url(@node)
+       redirect_to node_path(@node)
      end
    else
      render :action => :edit
@@ -68,21 +74,23 @@ class AvaluesController < ApplicationController
  # DELETE /nodes/:node_id/attribs/1
  def destroy
    @attrib.avalues.find(params[:id]).destroy
+   @node.solr_save
    flash["attrib_edit_#{@attrib.id}_notice".to_sym] = "Removed a value."
    if request.xhr?
      render :partial => "nodes/attrib", :locals => { :attrib => @attrib }
    else
-     redirect_to node_url(@node)
+     redirect_to node_path(@node)
    end
  end
  
  private
    def find_attrib
      @node_id = params[:node_id]
-     redirect_to nodes_url unless @node_id
+     redirect_to nodes_path unless @node_id
      @node = Node.find(@node_id)
+     @node.from_user = true
      @attrib_id = params[:attrib_id]
-     redirect_to attribs_url unless @attrib_id
+     redirect_to node_attribs_path unless @attrib_id
      @attrib = @node.attribs.find(@attrib_id)
    end
 end
