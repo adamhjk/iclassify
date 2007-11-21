@@ -47,7 +47,7 @@ class AvaluesController < ApplicationController
      if request.xhr?
        render :partial => "nodes/attrib", :locals => { :attrib => @attrib }
      else
-       redirect_to node_url(@node)
+       redirect_to node_path(@node)
      end
    else
      render :action => :new
@@ -63,7 +63,7 @@ class AvaluesController < ApplicationController
      if request.xhr?
        render :partial => "nodes/attrib", :locals => { :attrib => @attrib }
      else
-       redirect_to node_url(@node)
+       redirect_to node_path(@node)
      end
    else
      render :action => :edit
@@ -78,18 +78,18 @@ class AvaluesController < ApplicationController
    if request.xhr?
      render :partial => "nodes/attrib", :locals => { :attrib => @attrib }
    else
-     redirect_to node_url(@node)
+     redirect_to node_path(@node)
    end
  end
  
  private
    def find_attrib
      @node_id = params[:node_id]
-     redirect_to nodes_url unless @node_id
+     redirect_to nodes_path unless @node_id
      @node = Node.find(@node_id)
      @node.from_user = true
      @attrib_id = params[:attrib_id]
-     redirect_to node_attribs_url unless @attrib_id
+     redirect_to node_attribs_path unless @attrib_id
      @attrib = @node.attribs.find(@attrib_id)
    end
 end

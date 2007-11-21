@@ -1,0 +1,6 @@
+<div class="section_box">
+<h2>Editing <%= @user.login %></h2>  
+<% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| -%>
+<%= render :partial => "form", :locals => { :submit => "Update", :for_edit => true, :f => f} %>
+<% end -%>
+</div>

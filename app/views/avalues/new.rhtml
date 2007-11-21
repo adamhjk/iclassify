@@ -1,7 +1,7 @@
 <fieldset>
   <legend>Add Value</legend>
 <%= error_messages_for :avalue %>
-<% form_for :avalue, :url => node_attrib_avalues_url(:node_id => @node.id, :attrib_id => @attrib.id), :html => { :method => 'post' } do |form| %>
+<% form_for :avalue, :url => node_attrib_avalues_path(:node_id => @node.id, :attrib_id => @attrib.id), :html => { :method => 'post' } do |form| %>
 <%= render :partial => 'form', :locals => { :attrib => @attrib, :node => @node, :form => form }  %>
 <%= submit_tag "Create" %>
 <% end %>

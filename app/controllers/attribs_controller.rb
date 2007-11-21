@@ -50,7 +50,7 @@ class AttribsController < ApplicationController
                 :node => @node
           }
       else
-        redirect_to(node_url(@node))
+        redirect_to(node_path(@node))
       end
     else
       render :action => :new
@@ -63,7 +63,7 @@ class AttribsController < ApplicationController
     @attrib = @node.attribs.find(params[:id])
     if @attrib.update_attributes(params[:attrib])
       @attrib.update_solr
-      redirect_to node_url(@node)
+      redirect_to node_path(@node)
     else
       render :action => :edit
     end
@@ -78,14 +78,14 @@ class AttribsController < ApplicationController
     if request.xhr?
       render :partial => "/nodes/attrib_list", :locals => { :node => @node }
     else
-      redirect_to node_url(@node) unless request.xhr?
+      redirect_to node_path(@node) unless request.xhr?
     end
   end
   
   private
     def find_node
       @node_id = params[:node_id]
-      redirect_to nodes_url unless @node_id
+      redirect_to nodes_path unless @node_id
       @node = Node.find(@node_id)
       @node.from_user = true
     end

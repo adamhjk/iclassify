@@ -48,7 +48,7 @@ class NodesController < ApplicationController
     respond_to do |format|
       if @node.save_with_tags_and_attribs(tags, attribs)
         flash[:notice] = 'Node was successfully created.'
-        redirect_to node_url(@node)
+        redirect_to node_path(@node)
       else
         render :action => "new"
       end
@@ -63,14 +63,14 @@ class NodesController < ApplicationController
       tags, attribs = populate_tags_and_attribs(params)
       if @node.update_with_tags_and_attribs(params[:node], tags, attribs)
         flash[:notice] = 'Node was successfully updated.'
-        redirect_to node_url(@node)
+        redirect_to node_path(@node)
       else
         render :action => "edit"
       end
     else
       if @node.update_attributes(params[:node])
         flash[:notice] = 'Node was successfully updated.'
-        redirect_to node_url(@node)
+        redirect_to node_path(@node)
       else
         render :action => "edit"
       end
@@ -81,13 +81,13 @@ class NodesController < ApplicationController
   def destroy
     @node = Node.find(params[:id])
     @node.destroy
-    redirect_to nodes_url
+    redirect_to nodes_path
   end
   
   def show_uuid
     @node = Node.find_by_uuid(params[:uuid])
     raise "Cannot find node" unless @node
-    redirect_to node_url(@node) 
+    redirect_to node_path(@node) 
   end
   
   def update_uuid

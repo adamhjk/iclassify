@@ -82,6 +82,14 @@ div#header {
   width: 100%;
 }
 
+div#footer {
+	float: left;
+	clear: both;
+	width: 100%;
+	vertical-align: middle;
+	text-align: center;
+}
+
 div#logo {
   float: left;
 }

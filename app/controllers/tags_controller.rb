@@ -80,7 +80,7 @@ class TagsController < ApplicationController
       result = @node.save
     end
     if result
-      redirect_to node_url(@node)
+      redirect_to node_path(@node)
     else
       render :action => :new
     end
@@ -114,7 +114,7 @@ class TagsController < ApplicationController
     @tag = @node.tags.find(params[:id])
     if @tag.update_attributes(params[:tag])
       @node.solr_save
-      redirect_to node_url(@node)
+      redirect_to node_path(@node)
     else
       render :action => :edit
     end
@@ -138,7 +138,7 @@ class TagsController < ApplicationController
   def destroy
     @node.tags.delete(@node.tags.find(params[:id]))
     @node.solr_save
-    redirect_to node_url(@node)
+    redirect_to node_path(@node)
   end
   
   # DELETE /tags/:tag_id
@@ -198,7 +198,7 @@ class TagsController < ApplicationController
     def find_node
       if params[:node_id]
         @node_id = params[:node_id]
-        redirect_to nodes_url unless @node_id
+        redirect_to nodes_path unless @node_id
         @node = Node.find(@node_id)
         @node.from_user = true
       end

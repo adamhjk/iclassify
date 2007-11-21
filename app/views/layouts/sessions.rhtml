@@ -1,0 +1,6 @@
+<%= render :partial => "layouts/minimal_header" %>
+<div id="content">
+<p style="color: green"><%= flash[:notice] %></p>
+<%= yield  %>
+</div>
+<%= render :partial => "layouts/minimal_footer" %>

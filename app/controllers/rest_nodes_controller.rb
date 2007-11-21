@@ -55,7 +55,7 @@ class RestNodesController < ApplicationController
     @node.quarantined = true unless authorized?
     respond_to do |format|
       if @node.save_with_tags_and_attribs(tags, attribs)
-        format.xml  { head :created, :location => node_url(@node) }
+        format.xml  { head :created, :location => node_path(@node) }
       else
         format.xml  { render :xml => @node.errors.to_xml }
       end
