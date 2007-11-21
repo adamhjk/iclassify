@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'net/http'
+require 'net/https'
 require 'rexml/document'
 require 'uri'
 
