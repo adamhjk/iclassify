@@ -22,9 +22,15 @@
         <h1><%= link_to 'iClassify', url_for(:controller => 'dashboard', :action => 'index') %></h1>
     </div>
     <div id="search">
-        Hello <%= link_to(current_user.login, edit_user_path(current_user.id)) %> (<%= link_to('Logout', session_path, :method => :delete)%>) |
+        Hello 
+        <% if current_user.readwrite -%>
+        <%= link_to(current_user.login, edit_user_path(current_user.id)) %> (<%= link_to('Logout', session_path, :method => :delete)%>) 
+        |
         <%= link_to('User List', users_path)%> |
         <%= link_to 'Create a new node', new_node_path %>
+        <% else -%>
+        <%= current_user.login %> (<%= link_to('Logout', session_path, :method => :delete) %>)
+        <% end -%>
         <%= render :partial => "search/search_form" %>
     </div>
 </div>

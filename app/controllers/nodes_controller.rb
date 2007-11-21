@@ -19,6 +19,7 @@ class NodesController < ApplicationController
   include AuthorizedAsUser
   
   before_filter :login_required
+  before_filter :can_write, :except => [ "index", "show", "autocomplete" ]
   
   # GET /nodes
   def index

@@ -20,6 +20,7 @@ class AvaluesController < ApplicationController
   include AuthorizedAsUser
 
   before_filter :login_required
+  before_filter :can_write, :except => [ "index", "show" ]
   before_filter :find_attrib
  
  # GET /nodes/:node_id/attribs/new

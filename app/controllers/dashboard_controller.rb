@@ -20,6 +20,8 @@ class DashboardController < ApplicationController
   include AuthorizedAsUser
   
   before_filter :login_required
+  before_filter :can_write, :except => [ "index" ]
+  
   
   # GET /
   # GET /dashboard

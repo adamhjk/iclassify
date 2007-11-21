@@ -4,8 +4,8 @@
         <thead>
             <tr>
                 <th>Login</th>
-                <th>
-                </th>
+                <th>Read Write Access?</th>
+                <th> </th>
             </tr>
         </thead>
         <tbody>
@@ -13,6 +13,9 @@
         <tr>
             <td>
             <%= h user.login %>
+            </td>
+            <td>
+                <%= user.readwrite ? "Yes" : "No" %>
             </td>
             <td>
                 <%= edit_button("Edit", edit_user_path(user))%>

@@ -9,4 +9,7 @@
 <p><label for="password_confirmation">Confirm Password</label><br/>
 <%= f.password_field :password_confirmation %></p>
 
+<p><label for="readwrite">Read Write Access?</label><br/>
+<%= f.check_box :readwrite %>
+
 <p><%= submit_tag submit %></p>

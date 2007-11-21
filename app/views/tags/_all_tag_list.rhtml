@@ -1,9 +1,11 @@
 <h1 style="display: inline;">All Tags</h1>
+<% if current_user.readwrite == true -%>
  <%= add_button_remote(
     "add_new_tag_button",
     "Add new Tag",
     url_for(:controller => "tags", :action => "all_new"),
     "new_tag") %>
+<% end -%>
 <div id="new_tag" style="display: none;">
 </div>
 <div id="tag_list_box">

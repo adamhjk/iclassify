@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 9) do
+ActiveRecord::Schema.define(:version => 10) do
 
   create_table "attribs", :force => true do |t|
     t.column "node_id", :integer, :null => false
@@ -28,8 +28,8 @@ ActiveRecord::Schema.define(:version => 9) do
     t.column "tag_id",  :integer, :null => false
   end
 
-  add_index "nodes_tags", ["node_id"], :name => "index_nodes_tags_on_node_id"
   add_index "nodes_tags", ["tag_id"], :name => "index_nodes_tags_on_tag_id"
+  add_index "nodes_tags", ["node_id"], :name => "index_nodes_tags_on_node_id"
 
   create_table "tags", :force => true do |t|
     t.column "name", :string, :null => false
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(:version => 9) do
     t.column "updated_at",                :datetime
     t.column "remember_token",            :string
     t.column "remember_token_expires_at", :datetime
+    t.column "readwrite",                 :boolean,                :default => true
   end
 
 end

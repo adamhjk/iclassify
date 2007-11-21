@@ -23,15 +23,24 @@
 require 'rubygems'
 require File.dirname(__FILE__) + '/../lib/iclassify'
 require 'optparse'
+require 'highline/import'
 
 config = {
-  :server    => 'http://iclassify'
+  :server    => 'http://iclassify',
+  :user      => ENV.has_key?('USER') ? ENV["USER"] : nil,
+  :passwd    => nil
 }
 args = ARGV
 opts = OptionParser.new do |opts|
   opts.banner = "Usage: #{$0} [-s server] hostname"
   opts.on("-s SERVER", "--server", "iClassify Server URL") do |s|
     config[:server] = s
+  end
+  opts.on("-u user", "--user user", "User to authenticate with, defaults to USER env variable") do |u|
+    config[:user] = u
+  end
+  opts.on("-p passwd", "--passwd passwd", "Password to authenticate with") do |p|
+    config[:passwd] = p
   end
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
@@ -47,9 +56,20 @@ unless args.length == 1
   exit 1
 end
 
+unless config[:passwd]
+  config[:passwd] = HighLine.ask("Password: ") { |q| q.echo = "*" }
+end
+
+unless config[:user] && config[:passwd]
+  puts "You must provide a username and password."
+  puts opts.help
+  exit 1
+end
+
+
 hostname = args[0]
 
-client = IClassify::Client.new(config[:server])
+client = IClassify::Client.new(config[:server], config[:user], config[:passwd])
 begin
   results = client.search("hostname:\"#{hostname}\" OR fqdn:\"#{hostname}\"")
 rescue SocketError

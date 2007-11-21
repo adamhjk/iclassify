@@ -108,7 +108,7 @@ class RestNodesController < ApplicationController
 
   protected
     def check_node_or_user?(tocheck)
-      return true if current_user.is_a?(User)
+      return true if current_user.is_a?(User) && current_user.readwrite == true
       return true if current_user.is_a?(Node) && current_user.id == tocheck.id
       return false
     end

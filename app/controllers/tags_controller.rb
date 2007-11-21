@@ -19,6 +19,7 @@ class TagsController < ApplicationController
   include AuthorizedAsUser
   
   before_filter :find_node
+  before_filter :can_write, :except => [ "index", "show", "all_index", "all_show" ]
   
   # GET /nodes/:node_id/tags/new
   def new
