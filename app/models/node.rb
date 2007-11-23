@@ -221,7 +221,7 @@ class Node < ActiveRecord::Base
         self.quarantined = false
         self.save
       else
-        logger.error("from_user is #{from_user} and quarantined is #{quarantined}")
+        logger.debug("Keeping node in quarantine")
       end
     end
   
