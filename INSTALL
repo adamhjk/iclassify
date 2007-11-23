@@ -24,40 +24,40 @@ a piece of cake.  You need a few prerequisites:
 5. Builder. (http://builder.rubyforge.org)
    Builder is for generating XML.  "gem install builder". 
    
-6. Ferret and acts_as_ferret.
-   Ferret is a full text search engine.  Install the latest ferret from
-   gems, and then install the acts_as_ferret from trunk with:
-   
-   script/plugin install svn://projects.jkraemer.net/acts_as_ferret/trunk/plugin/acts_as_ferret
-
---------------------------------------   
-Instructions for the iClassify Service
---------------------------------------
+-----------------------------------------------------
+Instructions for the iClassify Service in Development
+-----------------------------------------------------
 
 Checkout iClassify
 
   $ git clone git://hjksolutions.com/iclassify iclassify
-
-Move the new directory to the location you want to serve it from.
-
-  $ sudo mv iclassify /srv/iclassify
+  $ cd iclassify
   
-Create the log directory.
+Create a few missing directories.
  
-  $ sudo mkdir /srv/iclassify/log
+  $ mkdir log
+  $ mkdir -p vendor/plugins/acts_as_solr/solr/solr/data/development
+  $ mkdir -p vendor/plugins/acts_as_solr/solr/logs 
+  $ mkdir -p vendor/plugins/acts_as_solr/solr/tmp
 
 Change to that directory, and create the database.
 
-  $ RAILS_ENV=production rake db:migrate
+  $ rake db:migrate
+
+Start solr.
+   
+  $ rake solr:start
   
 Start iClassify.
 
-  $ ./script/server -e production
+  $ ./script/server
   
 You can now hit port 3000 on your host to see the iClassify interface.
 Getting things running under a proper rails style deployment will eventually
 show up as a puppet recipe, but for now, it's left as an exercise to the
 user.
+
+The default password for the web UI is "admin" with password "iclassify".
 
 ------------------------
 Instructions for icagent
@@ -69,7 +69,7 @@ doing:
 
   $ mkdir /srv/icagent
   $ cd /srv/iclassify
-  $ cp -ra ./lib /srv/icagent
+  $ cp -ra ./lib/iclassify* /srv/icagent
   $ cp -ra ./icagent /srv/icagent
   $ cp -ra ./bin /srv/icagent
   
