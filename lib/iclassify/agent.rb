@@ -37,7 +37,7 @@ module IClassify
       begin 
         @node = @client.get_node(@uuid)
       rescue Net::HTTPServerException => e
-        if e.to_s == '404 "Not Found"'
+        if e.to_s =~ /^404/
           @node = IClassify::Node.new()
           @node.description = "New Node"
           @node.tags << "unclassified"
