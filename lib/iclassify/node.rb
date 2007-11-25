@@ -8,8 +8,9 @@ module IClassify
   class Node
     attr_accessor :tags, :uuid, :description, :notes, :attribs, :node_id, :password
     
-    def initialize(xml=nil)
-      from_xml(xml) if xml
+    def initialize(type=:xml, data=nil)
+      from_xml(data) if type == :xml && data
+      from_yaml(data) if type == :yaml && data
       @tags ||= Array.new
       @attribs ||= Array.new
       @password = nil
@@ -118,6 +119,15 @@ module IClassify
         cattrib[:values] = value_array 
         @attribs << cattrib
       end
+    end
+    
+    def from_yaml(data)
+      @tags = data[:tags].collect { |t| t[:name] }
+      @uuid = data[:uuid]
+      @description = data[:description]
+      @notes = data[:notes]
+      @attribs = data[:attribs].delete_if { |x| x[:name] == "text" }
+      @node_id = data[:id]
     end
       
   end

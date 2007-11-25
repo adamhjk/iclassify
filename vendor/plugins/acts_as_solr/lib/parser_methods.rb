@@ -6,7 +6,7 @@ module ActsAsSolr #:nodoc:
     
     # Method used by mostly all the ClassMethods when doing a search
     def parse_query(query=nil, options={}, models=nil)
-      valid_options = [:offset, :limit, :facets, :models, :results_format, :order, :scores, :operator]
+      valid_options = [:offset, :limit, :facets, :models, :results_format, :field_list, :order, :scores, :operator]
       query_options = {}
       return if query.nil?
       raise "Invalid parameters: #{(options.keys - valid_options).join(',')}" unless (options.keys - valid_options).empty?
@@ -28,15 +28,32 @@ module ActsAsSolr #:nodoc:
           query_options[:facets][:queries] = replace_types(options[:facets][:query].collect{|k| "#{k.sub!(/ *: */,"_t:")}"}) if options[:facets][:query]
         end
         
+        field_list = Array.new
         if models.nil?
           # TODO: use a filter query for type, allowing Solr to cache it individually
           models = "AND #{solr_configuration[:type_field]}:#{self.name}"
-          field_list = solr_configuration[:primary_key_field]
+          field_list << "#{solr_configuration[:primary_key_field]}"
         else
-          field_list = "id"
+          field_list << "id"
         end
-        
-        query_options[:field_list] = [field_list, 'score']
+        if options.has_key?(:field_list)
+          if options[:field_list].kind_of?(Array)
+            options[:field_list].each do |f| 
+              case f
+              when "*"
+                field_list << f
+              when "id"
+                field_list << f
+              else
+                field_list << "#{f}_t"
+              end
+            end
+          else
+            field_list << options[:field_list] + "_t"
+          end
+        end
+        field_list << "score"
+        query_options[:field_list] = field_list
         query = "(#{query.split(/\s/).collect { |qp| qp.sub(/:/, "_t:") }.join(" ")}) #{models}"
         order = options[:order].split(/\s*,\s*/).collect{|e| e.gsub(/\s+/,'_t ').gsub(/\bscore_t\b/, 'score')  }.join(',') if options[:order] 
         query_options[:query] = replace_types([query])[0] # TODO adjust replace_types to work with String or Array  

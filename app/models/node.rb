@@ -48,11 +48,31 @@ class Node < ActiveRecord::Base
     node = find_by_uuid(username) # need to get the salt
     node && node.authenticated?(password) ? node : nil
   end
+  
+  def self.find_raw_by_solr(query, options={})
+    if options.has_key?(:field_list)
+      unless options[:field_list].kind_of?(Array)
+        v = options[:field_list]
+        options[:field_list] = [ v ]
+      end
+    else
+      options[:field_list] = Array.new
+    end
+    options[:field_list] << "uuid"
+    options[:field_list] << "description"
+    options[:field_list] << "notes"
+    options[:field_list] << "tag"
+    data = parse_query(query, options)
+    results = StubNode.from_solr_query(data)
+  end
         
   def self.find_record_by_solr(q)
     ids = find_id_by_solr(q, :limit => :all)
     if ids.total > 0
-      find_by_sql("SELECT id, uuid, description, quarantined, notes FROM nodes WHERE id IN (#{ids.docs.join(', ')}) ORDER BY description")
+      find(:all, 
+           :conditions => "nodes.id IN (#{ids.docs.join(', ')})",
+           :order => 'description',
+           :include => [ :tags, :attribs ])
     else
       logger.debug("Returning nothing")
       Array.new

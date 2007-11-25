@@ -2,6 +2,7 @@ require 'rubygems'
 require 'net/https'
 require 'rexml/document'
 require 'uri'
+require 'yaml'
 
 module IClassify
 
@@ -20,17 +21,12 @@ module IClassify
       super method, params
     end
 
-    def search(query)
-      results = post_rest("search", "<q>#{query}</q>")
-      xml = REXML::Document.new(results)
-      node_array = Array.new
-      xml.elements.each("//node") do |node|
-        # TODO: Figure out why this needs to be a string.  It's
-        #       totally, completely bizzare, most likely because
-        #       I'm an idiot with XPath.
-        node_array << IClassify::Node.new(node.to_s)
-      end
-      node_array
+    def search(query, attribs=[])
+      raise ArgumentError, "Attributes must be given as a list!" unless attribs.kind_of?(Array)
+      querystring = "search?q=#{query}"
+      querystring << "&a=#{attribs.join(',')}" if attribs.length > 0
+      results = get_rest(querystring, "text/yaml")
+      node_array = YAML.load(results).collect { |n| IClassify::Node.new(:yaml, n) }
     end
     
     def get_node(node_id)
@@ -51,27 +47,27 @@ module IClassify
   
     private
     
-      def get_rest(path, args=false)
-        url = URI.parse("#{@url}/#{path}.xml")
-        run_request(:GET, url, args)
+      def get_rest(path, accept="application/xml")
+        url = URI.parse("#{@url}/#{path}")
+        run_request(:GET, url, false, accept)    
+      end                               
+                                        
+      def delete_rest(path, accept="application/xml")             
+        url = URI.parse("#{@url}/#{path}")
+        run_request(:DELETE, url, false, accept)       
+      end                               
+                                        
+      def post_rest(path, xml, accept="application/xml")          
+        url = URI.parse("#{@url}/#{path}")
+        run_request(:POST, url, xml, accept)    
+      end                               
+                                        
+      def put_rest(path, xml, accept="application/xml")           
+        url = URI.parse("#{@url}/#{path}")
+        run_request(:PUT, url, xml, accept)
       end
       
-      def delete_rest(path)
-        url = URI.parse("#{@url}/#{path}.xml")
-        run_request(:DELETE, url)
-      end 
-      
-      def post_rest(path, xml)
-        url = URI.parse("#{@url}/#{path}.xml")
-        run_request(:POST, url, xml)
-      end
-      
-      def put_rest(path, xml)
-        url = URI.parse("#{@url}/#{path}.xml")
-        run_request(:PUT, url, xml)
-      end
-      
-      def run_request(method, url, data=false)
+      def run_request(method, url, data=false, accept="application/xml")
         http = Net::HTTP.new(url.host, url.port)
         if url.scheme == "https"
           http.use_ssl = true 
@@ -79,13 +75,15 @@ module IClassify
         end
         http.read_timeout = 60
         headers = { 
-          'Accept' => 'application/xml',
-          'Content-Type' => 'application/xml'
+          'Accept' => accept,
+          'Content-Type' => accept
         }
         req = nil
         case method
         when :GET
-          req = Net::HTTP::Get.new(url.path, headers)
+          req_path = "#{url.path}"
+          req_path << "?#{url.query}" if url.query
+          req = Net::HTTP::Get.new(req_path, headers)
         when :POST
           req = Net::HTTP::Post.new(url.path, headers)
           req.body = data if data

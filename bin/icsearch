@@ -75,7 +75,7 @@ query = args[0]
 
 client = IClassify::Client.new(config[:server], config[:user], config[:passwd])
 begin
-  results = client.search(query)
+  results = client.search(query, config[:attribs] ? config[:attribs] : [])
 rescue SocketError
   $stderr.puts("Error: Could not connect to server.")
   exit 1
