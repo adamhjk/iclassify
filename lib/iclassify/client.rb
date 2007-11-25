@@ -23,8 +23,9 @@ module IClassify
 
     def search(query, attribs=[])
       raise ArgumentError, "Attributes must be given as a list!" unless attribs.kind_of?(Array)
-      querystring = "search?q=#{query}"
-      querystring << "&a=#{attribs.join(',')}" if attribs.length > 0
+      querystring = "search"
+      querystring << "?q=#{URI.escape(query)}"
+      querystring << "&a=#{URI.escape(attribs.join(','))}" if attribs.length > 0
       results = get_rest(querystring, "text/yaml")
       node_array = YAML.load(results).collect { |n| IClassify::Node.new(:yaml, n) }
     end
