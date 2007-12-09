@@ -49,12 +49,12 @@ class TagsController < ApplicationController
   
   # GET /tags/
   def all_index
-    @tags = Tag.find(:all, :order => :name)
+    @tags = Tag.find(:all, :order => :name, :include => [ :nodes ])
   end
   
   # GET /tags/:id
   def all_show
-    @tag = Tag.find(params[:id])
+    @tag = Tag.find(params[:id], :include => [ :nodes ])
     @tagged_nodes = get_tagged_nodes
   end
   

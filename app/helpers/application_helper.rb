@@ -18,7 +18,7 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   def tag_count
-    Tag.find_with_node_count(:all)
+    Tag.find_with_node_count(:all, :include => [ :nodes ])
   end
   
   def remove_button(alt, url, confirm)
