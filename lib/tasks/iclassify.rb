@@ -44,7 +44,8 @@ env_vars:
   database: #{ENV["DBNAME"]}
   username: #{ENV["DBUSER"]}
   password: #{ENV["DBPASS"]}
-  hostname: localhost"
+  hostname: localhost",
+    true
       )
     end
     
@@ -71,9 +72,9 @@ env_vars:
     end
   end
   
-  def write_file(file, contents)
+  def write_file(file, contents, force=false)
     file_path = File.join(ENV["ICBASE"], file)
-    if ! FileTest.exists?(file_path) 
+    if ! FileTest.exists?(file_path) || force
       puts "* Writing #{file_path}"
       File.open(file_path, "w") do |file|
         file.puts(contents)
