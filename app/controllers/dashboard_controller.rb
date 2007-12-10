@@ -64,6 +64,7 @@ class DashboardController < ApplicationController
         @heading = "Search Results"
       end
     end
+    render :template => "dashboard/bulk_tag.js.rjs"
   end
   
   private

@@ -176,11 +176,15 @@ class TagsController < ApplicationController
   
   # POST /tags/:id/nodes
   def all_node_add
-    @tag = Tag.find(params[:id])
+    @tag = Tag.find(params[:id], :include => [ :nodes ])
     unless @tag.nodes.detect { |n| n.description == params[:new_node] }
-      node = Node.find(:all, :conditions => [ "description = ?", params[:new_node] ])
-      @tag.nodes << node
-      node.each { |n| n.solr_save }
+      node = Node.find(:first, :conditions => [ "description = ?", params[:new_node] ])
+      if node
+        @tag.nodes << node
+        node.solr_save
+      else
+        flash[:add_notice] = "Cannot find node #{params[:new_node]}"
+      end
     end
     if request.xhr?
       render(:partial => "/tags/tagged_nodes", 

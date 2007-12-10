@@ -103,7 +103,7 @@ ActionController::Routing::Routes.draw do |map|
     :action => "all_destroy",
     :conditions => { :method => :delete }
     
-  map.connect "tags/:id;edit", 
+  map.connect "tags/:id/edit", 
     :controller => "tags", 
     :action => "all_edit",
     :conditions => { :method => :get }
