@@ -46,13 +46,11 @@ class NodesController < ApplicationController
   def create
     tags, attribs = populate_tags_and_attribs(params)
     @node = Node.new(params[:node])
-    respond_to do |format|
-      if @node.save_with_tags_and_attribs(tags, attribs)
-        flash[:notice] = 'Node was successfully created.'
-        redirect_to node_path(@node)
-      else
-        render :action => "new"
-      end
+    if @node.save_with_tags_and_attribs(tags, attribs)
+      flash[:notice] = 'Node was successfully created.'
+      redirect_to node_path(@node)
+    else
+      render :action => "new"
     end
   end
 
