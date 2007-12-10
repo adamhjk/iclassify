@@ -178,7 +178,6 @@ class Node < ActiveRecord::Base
   end
   
   def update_with_tags_and_attribs(params, tag_array=nil, attrib_array=nil)
-    logger.debug("Attrib array #{attrib_array.to_yaml}")
     self.update_attributes(params)
     if tag_array
       tags.each do |tag|
@@ -232,6 +231,13 @@ class Node < ActiveRecord::Base
       rest_hash[:attribs] << ahash
     end
     rest_hash
+  end
+  
+  def set_random_password(len)
+    chars = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
+    newpass = ""
+    1.upto(len) { |i| newpass << chars[rand(chars.size-1)] }
+    self.password = newpass
   end
   
   protected

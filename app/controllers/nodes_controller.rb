@@ -15,6 +15,8 @@
 #  with this program; if not, write to the Free Software Foundation, Inc.,
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+require 'uuidtools'
+
 class NodesController < ApplicationController
   include AuthorizedAsUser
   
@@ -34,6 +36,7 @@ class NodesController < ApplicationController
   # GET /nodes/new
   def new
     @node = Node.new
+    @node.uuid = UUID.random_create
   end
 
   # GET /nodes/1;edit
@@ -46,6 +49,7 @@ class NodesController < ApplicationController
   def create
     tags, attribs = populate_tags_and_attribs(params)
     @node = Node.new(params[:node])
+    @node.set_random_password(30)
     if @node.save_with_tags_and_attribs(tags, attribs)
       flash[:notice] = 'Node was successfully created.'
       redirect_to node_path(@node)
