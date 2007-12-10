@@ -1,0 +1,12 @@
+---
+port: 5000
+servers: 5
+environment: production
+cwd: /srv/iclassify
+runit_sv_dir: /etc/sv
+runit_service_dir: /var/service
+application_name: iclassify
+user: www-data
+group: www-data
+env_vars:
+  PATH: /var/lib/gems/1.8/bin:$PATH
