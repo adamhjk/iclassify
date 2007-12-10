@@ -17,39 +17,8 @@ namespace "iclassify" do
       puts "* Creating #{ENV["ICBASE"]}"
       FileUtils.mkdir_p ENV["ICBASE"]
     end
-    to_copy = [
-      "app",
-      "bin",
-      "components",
-      "config",
-      "db",
-      "lib",
-      "log",
-      "public",
-      "script",
-      "tmp",
-      "vendor",
-      "Rakefile"
-    ]
-    to_copy.each do |dir|
-      puts "* Copying #{dir}"
-      FileUtils.cp_r(
-        File.join(File.dirname(__FILE__), '..', '..', dir), 
-        File.join(ENV["ICBASE"], dir)
-      )
-    end
-    own_by_www_user = [
-      "tmp", 
-      "log", 
-      "vendor/plugins/acts_as_solr/solr/tmp", 
-      "vendor/plugins/acts_as_solr/solr/logs" 
-    ]
-    own_by_www_user.each do |dir|
-      puts "* Setting ownership on #{dir}"
-      FileUtils.chown_R(ENV["ICUSER"], ENV["ICGROUP"], File.join(ENV["ICBASE"], dir))
-    end
-    examples_dir = File.join(ENV["ICBASE"], "examples")
-    FileUtils.mkdir_p(examples_dir)
+    copy_iclassify_files()
+
     if ENV["MONGREL_RUNIT"] != "no"
       write_file(
       "examples/mongrel_runit_iclassify.yml", 
@@ -78,6 +47,7 @@ PATH: /var/lib/gems/1.8/bin:$PATH
   hostname: localhost"
       )
     end
+    
     run_migrations() if ENV["MIGRATE"] == "yes"
   end
   
@@ -86,7 +56,13 @@ PATH: /var/lib/gems/1.8/bin:$PATH
   end
   
   task :upgrade do |t|
-    
+    must_have_keys = [ "ICBASE", "ICUSER", "ICGROUP" ]
+    unless check_keys(must_have_keys)
+      raise "You must supply: #{must_have_keys.join(", ")}"
+    end
+    copy_iclassify_files()
+    ENV["MIGRATE"] ||= "yes"
+    run_migrations if ENV["MIGRATE"] == "yes"
   end
   
   def run_migrations 
@@ -112,6 +88,42 @@ PATH: /var/lib/gems/1.8/bin:$PATH
       return false unless ENV.has_key?(key)
     end
     return true
+  end
+  
+  def copy_iclassify_files
+    to_copy = [
+      "app",
+      "bin",
+      "components",
+      "config",
+      "db",
+      "lib",
+      "log",
+      "public",
+      "script",
+      "tmp",
+      "vendor",
+      "Rakefile"
+    ]
+    to_copy.each do |dir|
+      puts "* Copying #{dir}"
+      FileUtils.cp_r(
+        File.join(File.dirname(__FILE__), '..', '..', dir), 
+        File.join(ENV["ICBASE"])
+      )
+    end
+    own_by_www_user = [
+      "tmp", 
+      "log", 
+      "vendor/plugins/acts_as_solr/solr/tmp", 
+      "vendor/plugins/acts_as_solr/solr/logs" 
+    ]
+    own_by_www_user.each do |dir|
+      puts "* Setting ownership on #{dir}"
+      FileUtils.chown_R(ENV["ICUSER"], ENV["ICGROUP"], File.join(ENV["ICBASE"], dir))
+    end
+    examples_dir = File.join(ENV["ICBASE"], "examples")
+    FileUtils.mkdir_p(examples_dir)
   end
 
 end
