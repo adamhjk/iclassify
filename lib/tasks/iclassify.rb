@@ -28,12 +28,12 @@ servers: 5
 environment: production
 cwd: #{ENV["ICBASE"]}
 runit_sv_dir: /etc/sv
-runit_service_dir: #{File.join(ENV["ICBASE"], "service")}
+runit_service_dir: /var/service
 application_name: iclassify
 user: www-data
 group: www-data
 env_vars:
-PATH: /var/lib/gems/1.8/bin:$PATH
+  PATH: /var/lib/gems/1.8/bin:$PATH
 "
       )
     end
@@ -73,7 +73,7 @@ PATH: /var/lib/gems/1.8/bin:$PATH
   
   def write_file(file, contents)
     file_path = File.join(ENV["ICBASE"], file)
-    if FileTest.exists?(file_path) 
+    if ! FileTest.exists?(file_path) 
       puts "* Writing #{file_path}"
       File.open(file_path, "w") do |file|
         file.puts(contents)
