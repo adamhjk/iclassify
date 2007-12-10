@@ -17,6 +17,7 @@ Rails::Initializer.run do |config|
   config.frameworks -= [ :action_web_service, :action_mailer ]
   
   config.action_controller.session = { :session_key => "iclassify_session", :secret => "mkn1234lkjasdlfhvnzxdfalw34kj1239087asdfj!nsdf$%@!fnlkasdfjl!" }
+  
 
   # Only load the plugins named here, by default all plugins in vendor/plugins are loaded
   # config.plugins = %W( exception_notification ssl_requirement )
@@ -59,3 +60,8 @@ end
 # Mime::Type.register "text/richtext", :rtf
 # Mime::Type.register "application/x-mobile", :mobile
 # Include your application configuration below
+
+module ActionController
+  # HTTP methods which are accepted by default. 
+  ACCEPTED_HTTP_METHODS = Set.new(%w( get head put post delete options ))
+end

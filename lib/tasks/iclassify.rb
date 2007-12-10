@@ -37,9 +37,22 @@ env_vars:
 "
       )
     end
+    if ENV["SOLR_RUNIT"] != "no"
+      write_file("examples/solr-run",
+        "#!/bin/sh
+export JAVA_HOME=/usr/lib/jvm/java-6-sun
+cd #{ENV["ICBASE"]}/vendor/plugins/acts_as_solr/solr
+exec 2>&1
+exec \
+  chpst -u #{ENV["ICUSER"]} /usr/bin/java -Dsolr.data.dir=#{ENV["ICBASE"]}/vendor/plugins/acts_as_solr/solr/solr/data/production -Djetty.port=8983 -jar #{ENV["ICBASE"]}/vendor/plugins/acts_as_solr/solr/start.jar"
+      )
+      write_file("examples/solr-log", "#!/bin/sh
+exec svlogd -tt ./main"
+      )
+    end
     if ENV["DATABASE_YAML"] != "no"
       write_file("config/database.yml",
-      "production:
+        "production:
   adapter: mysql
   database: #{ENV["DBNAME"]}
   username: #{ENV["DBUSER"]}
