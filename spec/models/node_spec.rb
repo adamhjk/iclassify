@@ -59,4 +59,6 @@ describe Node do
     nodes(:latte).tag.should be_a_kind_of(Array)
   end
   
+  
+  
 end

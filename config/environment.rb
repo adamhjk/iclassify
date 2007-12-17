@@ -61,7 +61,9 @@ end
 # Mime::Type.register "application/x-mobile", :mobile
 # Include your application configuration below
 
-module ActionController
-  # HTTP methods which are accepted by default. 
-  ACCEPTED_HTTP_METHODS = Set.new(%w( get head put post delete options ))
-end
+ActionController::ACCEPTED_HTTP_METHODS << "options"
+
+#module ActionController
+#  # HTTP methods which are accepted by default. 
+#  ACCEPTED_HTTP_METHODS = Set.new(%w( get head put post delete options ))
+#end
