@@ -20,7 +20,7 @@ class RestSearchController < ApplicationController
     respond_to do |format|
       format.yaml { render :text => @nodes.collect { |n| n.to_hash }.to_yaml }
       format.json { render :text => [ @nodes.collect { |n| n.to_json } ].to_json }
-      format.xml  { render :layout => false, :template => "rest_search/index.rxml" }
+      format.xml  { render :layout => false, :template => "rest_search/index.xml.builder" }
     end
   end
   
