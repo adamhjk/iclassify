@@ -99,7 +99,9 @@ if config.has_key?(:attribs)
   header << ",tags" if config.has_key?(:tags)
   puts header unless config[:quiet]
   results.each do |node|
-    line = [ "#{node.description}", "#{node.uuid}" ] unless config[:only]
+    line = Array.new
+    line << "#{node.description}" unless config[:only]
+    line << "#{node.uuid}" unless config[:only]
     config[:attribs].each do |attrib|
       na = node.attribs.detect { |a| a[:name] == attrib }
       if na
