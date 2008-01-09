@@ -28,7 +28,9 @@ require 'highline/import'
 config = {
   :server => 'https://iclassify',
   :user   => ENV.has_key?('USER') ? ENV['USER'] : nil,
-  :passwd => nil
+  :passwd => nil,
+  :only => nil,
+  :quiet => nil
 }
 opts = OptionParser.new do |opts|
   opts.banner = "Usage: #{$0} (options) query"
@@ -46,6 +48,12 @@ opts = OptionParser.new do |opts|
   end
   opts.on("-s server", "--server server", "iClassify Server URL") do |s|
     config[:server] = s
+  end
+  opts.on("-o", "--only", "Print only the attributes specified on the command line") do |o|
+    config[:only] = o
+  end
+  opts.on("-q", "--quiet", "Do not print the header") do |q|
+    config[:quiet] = q
   end
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
@@ -82,11 +90,16 @@ rescue SocketError
 end
 
 if config.has_key?(:attribs)
-  header = "# description,uuid,#{config[:attribs].join(',')}"
+  header = "# "
+  if config[:only]
+    header += "#{config[:attribs].join(',')}"
+  else
+    header += "description,uuid,#{config[:attribs].join(',')}"
+  end
   header << ",tags" if config.has_key?(:tags)
-  puts header
+  puts header unless config[:quiet]
   results.each do |node|
-    line = [ "#{node.description}", "#{node.uuid}" ]
+    line = [ "#{node.description}", "#{node.uuid}" ] unless config[:only]
     config[:attribs].each do |attrib|
       na = node.attribs.detect { |a| a[:name] == attrib }
       if na
