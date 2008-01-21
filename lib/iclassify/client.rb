@@ -31,7 +31,7 @@ module IClassify
     end
     
     def get_node(node_id)
-      IClassify::Node.new(get_rest("nodes/#{node_id}"))
+      IClassify::Node.new(:xml, get_rest("nodes/#{node_id}"))
     end
     
     def update_node(node)

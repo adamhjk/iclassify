@@ -5,7 +5,7 @@ class NodeTest < Test::Unit::TestCase
   XML = IO.read(File.dirname(__FILE__) + '/../data/new_node.xml')
   
   def setup
-    @node = IClassify::Node.new(XML)
+    @node = IClassify::Node.new(:xml, XML)
   end
   
   def test_load_data
