@@ -45,6 +45,9 @@ opts = OptionParser.new do |opts|
   opts.on("-n", "--no-action", "Don't update anything, just print.") do |n|
     config[:dryrun] = true
   end
+  opts.on("-w WAIT", "--wait TIME", "Wait for up to TIME seconds.") do |w|
+    config[:wait] = w.to_i
+  end
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
     exit
@@ -56,6 +59,11 @@ unless config.has_key?(:recipe) || config.has_key?(:directory)
   puts "You must specify either a recipe (-r) or a directory (-d)"
   puts opts
   exit
+end
+
+if config.has_key?(:wait)
+  splay = rand(config[:wait])
+  sleep(splay)
 end
 
 agent = IClassify::Agent.new(config[:uuidfile], config[:server])
