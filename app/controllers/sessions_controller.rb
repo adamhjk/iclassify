@@ -10,7 +10,12 @@ class SessionsController < ApplicationController
 
   def create
     if params[:login] != UUIDREGEX
-      self.current_user = User.authenticate(params[:login], params[:password])
+      dbuser = User.authenticate(params[:login], params[:password])
+      if dbuser 
+        self.current_user = dbuser
+      else 
+        self.current_user = LDAPUser.authenticate(params[:login], params[:password])
+      end
     else
       logger.info("Attempt to log in to the web interface with a Node UUID (#{params[:login]})!")
       self.current_user = nil

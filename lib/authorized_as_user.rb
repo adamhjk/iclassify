@@ -1,7 +1,7 @@
 module AuthorizedAsUser
   protected
     def authorized?
-      logged_in? && current_user.class.to_s == "User"  
+      logged_in? && current_user.class.to_s == "User" || current_user.class.to_s == "LDAPUser"  
     end
     
     def can_write

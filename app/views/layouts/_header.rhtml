@@ -24,7 +24,12 @@
     <div id="search">
         Hello 
         <% if current_user.readwrite -%>
-        <%= link_to(current_user.login, edit_user_path(current_user.id)) %> (<%= link_to('Logout', session_path, :method => :delete)%>) 
+        <% if current_user.class.to_s != 'LDAPUser' -%>
+        <%= link_to(current_user.login, edit_user_path(current_user.id)) %> 
+        <% else -%>
+        <%= current_user.login %> (from LDAP)
+        <% end -%>
+        (<%= link_to('Logout', session_path, :method => :delete)%>) 
         |
         <%= link_to('User List', users_path)%> |
         <%= link_to 'Create a new node', new_node_path %>

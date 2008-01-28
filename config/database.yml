@@ -22,7 +22,7 @@ development:
   #adapter: sqlite3
   #database: db/iclassify_development
   adapter: mysql
-  database: iclassify_production
+  database: iclassify_development
   username: root
   password:
   socket: /tmp/mysql.sock

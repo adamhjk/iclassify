@@ -1,0 +1,23 @@
+#
+# iClassify configuration
+#
+
+development:
+  use_ldap: true
+  ldap_config:
+    host: cyclops.hjksolutions.com
+    port: 389
+    auth_basedn: dc=hjksolutions,dc=com
+    auth_scope: sub
+    auth_needs_bind: false
+    auth_bind_dn: uid=foo,ou=people,dc=hjksolutions,dc=com
+    auth_bind_pw: monkey
+    auth_query: '(uid=%s)'
+    authz_default: readwrite
+    authz_use_lookup: true
+    authz_basedn: dc=hjksolutions,dc=com
+    authz_scope: sub
+    authz_query: '(&(cn=sysadmins)(memberUid=%s))'
+  
+production:
+  url: http://localhost:8983/solr

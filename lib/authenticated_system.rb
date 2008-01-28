@@ -100,11 +100,14 @@ module AuthenticatedSystem
 
     # Called from #current_user.  First attempt to login by the user id stored in the session.
     def login_from_session
+      logger.info(session.to_yaml)
       if session[:user]
         if session[:user_type] == 'Node'
           self.current_user = Node.find_by_id(session[:user])
-        else
-          self.current_user = User.find_by_id(session[:user]) 
+        elsif session[:user_type] == 'User'
+          self.current_user = User.find_by_id(session[:user])
+        elsif session[:user_type] == 'LDAPUser'
+          self.current_user = LDAPUser.find_by_id(session[:user])
         end
       end
     end
@@ -112,10 +115,18 @@ module AuthenticatedSystem
     # Called from #current_user.  Now, attempt to login by basic authentication information.
     def login_from_basic_auth
       username, passwd = get_auth_data
+      logger.info("I have #{username} and passwd #{passwd}")
       if username =~ UUIDREGEX
         self.current_user = Node.authenticate(username, passwd) if username && passwd
       else
-        self.current_user = User.authenticate(username, passwd) if username && passwd
+        dbuser = User.authenticate(username, passwd) if username && passwd
+        if dbuser
+          self.current_user = dbuser
+        else
+          ldapuser = LDAPUser.authenticate(username, passwd) if username && passwd
+          logger.info("I have #{username} #{passwd} #{ldapuser.to_yaml}")
+          self.current_user = ldapuser
+        end
       end
     end
 
