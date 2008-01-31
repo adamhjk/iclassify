@@ -1,6 +1,6 @@
 <div id="bulk_tag">
 <% if nodes.length > 0 -%>
-<h1><%= heading %></h1>
+<h1><%= heading %></h1> 
 <p id="bulk_tags_notice" style="color: green"><%= flash[:bulk_tags_notice] %></p>
 <% form_tag(url_for(:controller => "dashboard", :action => "bulk_tag"), 
                      :id => "bulk_tag_list", :class => "remote_form_rjs", :update => "bulk_tag") do -%>

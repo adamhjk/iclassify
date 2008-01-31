@@ -1,5 +1,5 @@
 <div id="node_listing" class="fieldset">
-    <h2>Nodes</h2>
+    <h2>Nodes (<%= nodes.length %> <%= nodes.length == 1 ? "node" : "nodes" %>)</h2> 
 <%= link_to "Select All Nodes", "javascript: void(0);", { :class => "select_all", :to_select => "tag_node" } %>
 <%= link_to "Unselect All Nodes", "javascript: void(0);", { :class => "unselect_all", :to_select => "tag_node" } %>
     <%= render :partial => "nodes/listing", :locals => { :checkbox => true, :nodes => nodes, :table_id => "search_list" }%>

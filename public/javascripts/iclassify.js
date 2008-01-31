@@ -149,7 +149,7 @@ $(function() {
     }
   );
   
-  $("input#tag_list").livequery("change",
+   $("input#tag_list").livequery("keyup",
     function() {
       current_tags = $(this).val();
       $(".tag_cloud_entry").each(
@@ -173,6 +173,22 @@ $(function() {
  
     }
   );
+
+  /*
+  $("input#tag_list").livequery(
+      function () {
+        var mytags = [];
+        $(".tag_cloud_entry").each(
+            function() {
+                mytags.push($(this).attr("tag"));
+            }
+        );    
+        $(this).tagSuggest({
+          tags: mytags
+        });
+      }
+  );
+  */
  /*  
   function add_present_tag(link, tag, tag_cloud_id) {
       link.addClassName("tag_present")
