@@ -47,7 +47,7 @@ class Attrib < ActiveRecord::Base
           :name => attrib_hash['name']
         )
       end
-      attrib_hash['values']['value'].each do |v|
+      attrib_hash['values']['value'].to_a.each do |v|
         unless attrib.avalues.find_by_value(v)
           attrib.avalues << attrib.avalues.new(:value => v)
         end
