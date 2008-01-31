@@ -50,7 +50,7 @@ class LDAPUser
      :base => ldap_config("auth_basedn"),
      :filter => sprintf(ldap_config("auth_query"), login) 
     )
-    if result
+    if result && result.length > 0
       readwrite = authz_lookup(ldap, login)
       LDAPUser.new(
         :login => login,
@@ -68,7 +68,7 @@ class LDAPUser
           :base => ldap_config("authz_basedn"),
           :filter => sprintf(ldap_config("authz_query"), login)
         )
-        readwrite = ar ? true : false
+        readwrite = ar && ar.length > 0 ? true : false
       end
       readwrite
     end

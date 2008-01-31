@@ -100,7 +100,6 @@ module AuthenticatedSystem
 
     # Called from #current_user.  First attempt to login by the user id stored in the session.
     def login_from_session
-      logger.info(session.to_yaml)
       if session[:user]
         if session[:user_type] == 'Node'
           self.current_user = Node.find_by_id(session[:user])

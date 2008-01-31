@@ -8,7 +8,10 @@ unless attrib?("puppet_env")
   if fqdn =~ /amazonaws.com$/
     add_attrib("puppet_env", "prod")
   else
-    hostname =~ /^.+?\d+(.+)$/
-    add_attrib("puppet_env", $1)
+    if hostname =~ /^.+?\d+(.+)$/
+      add_attrib("puppet_env", $1)
+    else
+      add_attrib("puppet_env", "prod")
+    end
   end
 end

@@ -35,7 +35,7 @@ class RestNodesController < ApplicationController
     @node, @node_unique_field = Node.find_by_unique(params[:id])
     if check_node_or_user?(@node)
       respond_to do |format|
-        format.xml  { render :layout => false, :template => "rest_nodes/show.rxml" }
+        format.xml  { render :layout => false, :template => "rest_nodes/show.xml.builder" }
       end
     else
       if @node

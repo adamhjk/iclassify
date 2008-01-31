@@ -17,7 +17,7 @@ development:
     authz_use_lookup: true
     authz_basedn: dc=hjksolutions,dc=com
     authz_scope: sub
-    authz_query: '(&(cn=sysadmins)(memberUid=%s))'
+    authz_query: '(&(cn=sysadmin)(memberUid=%s))'
   
 production:
   url: http://localhost:8983/solr
