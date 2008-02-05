@@ -5,9 +5,9 @@ domain = attrib?('domain')
 ec2 = true if domain =~ /\.amazonaws.com$/
 
 if ec2
-  add_attrib("ec2", "true") 
+  replace_attrib("ec2", "true") 
 else
-  add_attrib("ec2", "false")
+  replace_attrib("ec2", "false")
 end
 
 def get_from_ec2(thing="/")

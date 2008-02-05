@@ -105,9 +105,22 @@ module IClassify
     
     # Add an attribute to this node. Requires a name and either a string or
     # array of values.
+    #
+    # Will be cumulative!
     def add_attrib(name, values)
       load unless @node
       @node.attribs << { :name => name, :values => values.kind_of?(Array) ? values : [ values ] }
+    end
+    
+    # Replace the attribute with the given name's values in place.
+    # Will add a new attribute if it needs to.
+    def replace_attrib(name, values)
+      exists = @node.attribs.detect { |a| a[:name] == name }
+      if exists
+        exists[:values] = values.kind_of?(Array) ? values : [ values ]
+      else
+        add_attrib(name, value)
+      end
     end
     
     # Run an iclassify script.
