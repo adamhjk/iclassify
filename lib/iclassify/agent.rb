@@ -119,7 +119,7 @@ module IClassify
       if exists
         exists[:values] = values.kind_of?(Array) ? values : [ values ]
       else
-        add_attrib(name, value)
+        add_attrib(name, values)
       end
     end
     
