@@ -1,0 +1,46 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use LWP::UserAgent;
+use JSON::Syck;
+use YAML::Syck;
+
+die "Must provide nodename!" unless $ARGV[0];
+
+my $ua = LWP::UserAgent->new;
+$ua->agent("icpuppet-thin/0.1");
+my $req =
+  HTTP::Request->new( GET =>
+"http://localhost:8983/solr/select/?q=hostname_t:$ARGV[0] OR fqdn_t:$ARGV[0]&wt=json"
+  );
+$req->authorization_basic( "puppet", "something" );
+
+my $res = $ua->request($req);
+
+# check the outcome
+if ( $res->is_success ) {
+  my $output;
+  my $data = JSON::Syck::Load( $res->decoded_content );
+  if ( exists( $data->{response}->{docs} ) ) {
+    my $entry_field = $data->{response}->{docs}->[0];
+    foreach my $key ( keys( %{$entry_field} ) ) {
+      next unless $key =~ /^(.+)_t/;
+      my $real_name = $1;
+      if ( $key eq "tag_t" ) {
+        $output->{classes}->{$real_name} = $entry_field->{$key};
+      } else {
+        if ( scalar( @{ $entry_field->{$key} } ) > 1 ) {
+          $output->{parameters}->{$real_name} = $entry_field->{$key};
+        } else {
+          $output->{parameters}->{$real_name} = $entry_field->{$key}->[0];
+        }
+      }
+    }
+  }
+  print YAML::Syck::Dump($output);
+  exit 0;
+} else {
+  print "Error: " . $res->status_line . "\n";
+  exit 1;
+}
