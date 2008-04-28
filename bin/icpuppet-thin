@@ -31,6 +31,7 @@ if ( $res->is_success ) {
       if ( $key eq "tag_t" ) {
         foreach my $tag (@{$entry_field->{$key}}) {
           push(@{$output->{classes}}, $tag);
+          push(@{$output->{parameters}->{'iclassify_tags'}}, $tag);
         }
       } else {
         if ( scalar( @{ $entry_field->{$key} } ) > 1 ) {
