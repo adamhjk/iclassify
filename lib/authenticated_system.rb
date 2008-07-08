@@ -114,7 +114,6 @@ module AuthenticatedSystem
     # Called from #current_user.  Now, attempt to login by basic authentication information.
     def login_from_basic_auth
       username, passwd = get_auth_data
-      logger.info("I have #{username} and passwd #{passwd}")
       if username =~ UUIDREGEX
         self.current_user = Node.authenticate(username, passwd) if username && passwd
       else
@@ -123,7 +122,6 @@ module AuthenticatedSystem
           self.current_user = dbuser
         else
           ldapuser = LDAPUser.authenticate(username, passwd) if username && passwd
-          logger.info("I have #{username} #{passwd} #{ldapuser.to_yaml}")
           self.current_user = ldapuser
         end
       end
