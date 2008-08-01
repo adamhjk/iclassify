@@ -123,6 +123,16 @@ module IClassify
       end
     end
     
+    # Set the description for the node
+    def description(value)
+      @node.description = value
+    end
+
+    # return the value of @node.description
+    def description?()
+      @node.description
+    end
+
     # Run an iclassify script.
     def run_script(scriptfile)
       eval(IO.read(scriptfile))
