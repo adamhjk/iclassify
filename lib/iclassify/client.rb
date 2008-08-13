@@ -43,7 +43,7 @@ module IClassify
     end
     
     def delete_node(node)
-      delete_rest("nodes/#{node_id.node_id}")
+      delete_rest("nodes/#{node.node_id}")
     end
   
     private
