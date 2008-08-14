@@ -4,7 +4,7 @@ ActionController::Routing::Routes.draw do |map|
     :path_prefix => "/rest", 
     :name_prefix => "rest_", 
     :controller => "rest_nodes"
- 
+    
   map.resources :tags,
     :path_prefix => "/rest", 
     :name_prefix => "rest_", 
