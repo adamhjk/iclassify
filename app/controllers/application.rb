@@ -22,6 +22,11 @@ class ApplicationController < ActionController::Base
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_iclassify_session_id'
 
+  # Uncomment this to filter the contents of submitted sensitive data parameters
+  # from your application log (in this case, all fields with names like "password").
+  # filter_parameter_logging :password
+  filter_parameter_logging :password
+
   include AuthenticatedSystem
   
   def populate_tags_and_attribs(params=nil)
