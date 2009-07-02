@@ -36,7 +36,7 @@ class NodesController < ApplicationController
   # GET /nodes/new
   def new
     @node = Node.new
-    @node.uuid = UUID.random_create
+    @node.uuid = UUIDTools::UUID.random_create
   end
 
   # GET /nodes/1;edit
